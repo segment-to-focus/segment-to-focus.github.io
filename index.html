@@ -183,8 +183,35 @@
     .vid-label.ours { color: var(--accent-dark); }
     .placeholder-note { background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:.9rem 1.1rem; font-size:.9rem; }
 
+    /* Video carousel */
+    .vid-carousel { max-width: 940px; margin: 1.6rem auto 0; }
+    .carousel-stage { position:relative; }
+    .carousel-viewport { overflow:hidden; border-radius:14px; }
+    .carousel-track { display:flex; transition: transform .4s ease; }
+    .carousel-slide { min-width:100%; box-sizing:border-box; padding: 0 .2rem; }
+    .vid-stack { display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem; }
+    .vid-row .vid-caption { text-align:center; font-weight:700; margin-bottom:.45rem; font-size:.88rem; }
+    .vid-caption.orig { color:#334155; }
+    .vid-caption.lapo { color:#b45309; }
+    .vid-caption.ours { color: var(--accent-dark); }
+    .carousel-slide .video-slot { aspect-ratio: 1/1; background: transparent; border: none; }
+    .carousel-slide .video-slot .fas { font-size: 1.4rem; margin-bottom:.4rem; }
+    .carousel-slide .video-slot span { font-size:.8rem; text-align:center; padding:0 .4rem; }
+    .carousel-slide .video-slot video { display:block; object-fit: contain; }
+    .carousel-btn { position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:42px; height:42px; border-radius:50%; border:none; background: var(--accent-dark); color:#fff; font-size:1.3rem; line-height:1; cursor:pointer; box-shadow:0 3px 12px rgba(15,118,110,.35); transition: background .2s, transform .2s; display:flex; align-items:center; justify-content:center; }
+    .carousel-btn:hover { background: var(--accent); transform: translateY(-50%) scale(1.08); }
+    .carousel-btn.prev { left:-21px; }
+    .carousel-btn.next { right:-21px; }
+    .carousel-meta { text-align:center; margin-top:1rem; }
+    .carousel-env { font-weight:700; color: var(--accent-dark); }
+    .carousel-dots { display:flex; gap:.5rem; justify-content:center; margin-top:.6rem; }
+    .carousel-dots button { width:.65rem; height:.65rem; border-radius:50%; border:none; padding:0; background:#cbd5e0; cursor:pointer; transition: background .2s; }
+    .carousel-dots button.is-active { background: var(--accent); }
+
     @media (max-width: 640px) {
       .video-pair { grid-template-columns: 1fr; }
+      .carousel-btn.prev { left:4px; }
+      .carousel-btn.next { right:4px; }
     }
 
     /* BibTeX */
@@ -547,59 +574,139 @@
   <section class="section hero is-light">
     <div class="container is-max-desktop">
       <h2 class="title is-3 section-title has-text-centered">MaskLAM focuses on the agent, not the distractor</h2>
-      <figure class="paper-figure">
-        <div style="display:inline-flex; gap:1.6rem;">
-          <div><img class="crisp bordered" src="static/images/paper/eigencam_lapo.png" style="width:240px;" alt="Eigen-CAM LAPO"><div class="vid-label lapo">LAPO</div></div>
-          <div><img class="crisp bordered" src="static/images/paper/eigencam_masklam.png" style="width:240px; outline:3px solid var(--accent);" alt="Eigen-CAM MaskLAM"><div class="vid-label ours">MaskLAM</div></div>
+      <!-- ===== Video carousel: original / LAPO / MaskLAM per environment ===== -->
+      <div class="vid-carousel" id="attnCarousel">
+        <div class="carousel-stage">
+          <button class="carousel-btn prev" type="button" aria-label="Previous environment">&#8249;</button>
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="attnTrack"></div>
+          </div>
+          <button class="carousel-btn next" type="button" aria-label="Next environment">&#8250;</button>
         </div>
-        <figcaption class="fig-caption">
-          <b>Eigen-CAM saliency on cheetah-run (DCS, distractor).</b> Warmer colors indicate higher influence on the
-          predicted latent action. LAPO's saliency falls on the distractor background, while MaskLAM's covers the cheetah
-          body and extends to its contact surface with the ground, including pixels outside the supervising mask, showing
-          the IDM learns endogenous context from data beyond what the mask directly supervises.
-        </figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ============ ATTENTION VIDEO COMPARISON (placeholder) ============ -->
-  <section class="section">
-    <div class="container is-max-desktop">
-      <h2 class="title is-3 section-title has-text-centered">Attention over time: LAPO vs. MaskLAM</h2>
-      <p class="content has-text-centered" style="color:var(--muted);">
-        Per-environment saliency videos show LAPO's attention drifting onto moving distractors while MaskLAM stays locked
-        on the agent throughout the episode.
-      </p>
-
-      <div class="placeholder-note" style="margin:1rem auto 1.6rem; max-width:760px;">
-        <i class="fas fa-info-circle"></i>&nbsp; <b>Videos not yet added.</b> Drop the comparison clips into
-        <code>static/videos/attention/</code> (e.g. <code>cheetah_lapo.mp4</code> / <code>cheetah_masklam.mp4</code>) and
-        uncomment the <code>&lt;source&gt;</code> tags below; the layout is already wired up. Add one row per environment.
+        <div class="carousel-meta">
+          <span class="carousel-env" id="attnEnv"></span>
+          <div class="carousel-dots" id="attnDots"></div>
+        </div>
       </div>
 
-      <!-- Environment 1 -->
-      <h3 class="title is-5 has-text-centered" style="margin-bottom:.8rem;">cheetah-run (DCS)</h3>
-      <div class="video-pair">
-        <div>
-          <div class="video-slot">
-            <video autoplay muted loop playsinline style="display:none;">
-              <!-- TODO: <source src="static/videos/attention/cheetah_lapo.mp4" type="video/mp4"> -->
-            </video>
-            <i class="fas fa-film"></i><span>LAPO clip: add file</span>
-          </div>
-          <div class="vid-label lapo">LAPO: attends to distractors</div>
-        </div>
-        <div>
-          <div class="video-slot">
-            <video autoplay muted loop playsinline style="display:none;">
-              <!-- TODO: <source src="static/videos/attention/cheetah_masklam.mp4" type="video/mp4"> -->
-            </video>
-            <i class="fas fa-film"></i><span>MaskLAM clip: add file</span>
-          </div>
-          <div class="vid-label ours">MaskLAM: attends to the agent</div>
-        </div>
-      </div>
-      <!-- TODO: duplicate the block above for walker-run, hopper-hop, humanoid-walk, and the DMW tasks. -->
+      <figcaption class="fig-caption" style="margin-top:1.2rem;">
+        <b>Eigen-CAM saliency on different environments.</b> Warmer colors indicate higher influence on the predicted
+        latent action. LAPO's saliency often falls on the distractor background, while MaskLAM's covers the agent body
+        and extends to contact surfaces, including pixels outside the supervising mask, showing the IDM learns endogenous
+        context from data beyond what the mask directly supervises. Use the arrows to switch environments.
+      </figcaption>
+
+      <script>
+        (function () {
+          var track = document.getElementById('attnTrack');
+          if (!track) return;
+
+          // Per-environment clips; one filename shared across the original/lapo/slapo folders.
+          var ENVS = [
+            { label: "cheetah-run · DCS",   file: "dm_control_masked-cheetah-run-distractor-low-v0.mp4" },
+            { label: "walker-run · DCS",    file: "dm_control_masked-walker-run-distractor-low-v0.mp4" },
+            { label: "hopper-hop · DCS",    file: "dm_control_masked-hopper-hop-distractor-low-v0.mp4" },
+            { label: "humanoid-walk · DCS", file: "dm_control_masked-humanoid-walk-distractor-low-v0.mp4" },
+            { label: "window-open · Meta-World",        file: "Meta-World_masked-MT1-window-open-v3.mp4" },
+            { label: "window-close · Meta-World",       file: "Meta-World_masked-MT1-window-close-v3.mp4" },
+            { label: "door-open · Meta-World",          file: "Meta-World_masked-MT1-door-open-v3.mp4" },
+            { label: "drawer-open · Meta-World",        file: "Meta-World_masked-MT1-drawer-open-v3.mp4" },
+            { label: "drawer-close · Meta-World",       file: "Meta-World_masked-MT1-drawer-close-v3.mp4" },
+            { label: "button-press-topdown · Meta-World", file: "Meta-World_masked-MT1-button-press-topdown-v3.mp4" },
+            { label: "pick-place · Meta-World",         file: "Meta-World_masked-MT1-pick-place-v3.mp4" },
+            { label: "push · Meta-World",               file: "Meta-World_masked-MT1-push-v3.mp4" },
+            { label: "reach · Meta-World",              file: "Meta-World_masked-MT1-reach-v3.mp4" },
+            { label: "peg-insert-side · Meta-World",    file: "Meta-World_masked-MT1-peg-insert-side-v3.mp4" }
+          ];
+          var COLS = [
+            { dir: "original", cls: "orig", name: "Original" },
+            { dir: "lapo",     cls: "lapo", name: "LAPO" },
+            { dir: "slapo",    cls: "ours", name: "MaskLAM" }
+          ];
+
+          ENVS.forEach(function (env) {
+            var slide = document.createElement("div");
+            slide.className = "carousel-slide";
+            slide.dataset.env = env.label;
+            var stack = document.createElement("div");
+            stack.className = "vid-stack";
+            COLS.forEach(function (c) {
+              var row = document.createElement("div");
+              row.className = "vid-row";
+              var cap = document.createElement("div");
+              cap.className = "vid-caption " + c.cls;
+              cap.textContent = c.name;
+              var slot = document.createElement("div");
+              slot.className = "video-slot";
+              var v = document.createElement("video");
+              v.muted = true; v.loop = true; v.playsInline = true;
+              v.setAttribute("preload", "none");
+              v.dataset.src = "videos/" + c.dir + "/" + env.file;
+              slot.appendChild(v);
+              row.appendChild(cap);
+              row.appendChild(slot);
+              stack.appendChild(row);
+            });
+            slide.appendChild(stack);
+            track.appendChild(slide);
+          });
+
+          var root = document.getElementById("attnCarousel");
+          var slides = Array.prototype.slice.call(track.children);
+          var envLabel = document.getElementById("attnEnv");
+          var dotsWrap = document.getElementById("attnDots");
+          var i = 0;
+
+          slides.forEach(function (s, idx) {
+            var d = document.createElement("button");
+            d.type = "button";
+            d.setAttribute("aria-label", "Go to " + s.dataset.env);
+            d.addEventListener("click", function () { go(idx); });
+            dotsWrap.appendChild(d);
+          });
+          var dots = Array.prototype.slice.call(dotsWrap.children);
+
+          function setPlaying(slide, on) {
+            Array.prototype.forEach.call(slide.querySelectorAll("video"), function (v) {
+              if (on) {
+                if (!v.src && v.dataset.src) v.src = v.dataset.src;
+                var p = v.play();
+                if (p && p.catch) p.catch(function () {});
+              } else {
+                v.pause();
+              }
+            });
+          }
+
+          var stage = root.querySelector(".carousel-stage");
+          var prevBtn = root.querySelector(".carousel-btn.prev");
+          var nextBtn = root.querySelector(".carousel-btn.next");
+
+          // Vertically center the arrows on the video (not the caption above it).
+          function positionArrows() {
+            var slot = slides[i].querySelector(".video-slot");
+            if (!slot) return;
+            var center = slot.offsetTop + slot.offsetHeight / 2;
+            prevBtn.style.top = center + "px";
+            nextBtn.style.top = center + "px";
+          }
+
+          function go(n) {
+            i = (n + slides.length) % slides.length;
+            track.style.transform = "translateX(" + (-i * 100) + "%)";
+            envLabel.textContent = slides[i].dataset.env || "";
+            dots.forEach(function (d, idx) { d.classList.toggle("is-active", idx === i); });
+            slides.forEach(function (s, idx) { setPlaying(s, idx === i); });
+            positionArrows();
+          }
+
+          prevBtn.addEventListener("click", function () { go(i - 1); });
+          nextBtn.addEventListener("click", function () { go(i + 1); });
+          window.addEventListener("resize", positionArrows);
+          go(0);
+          positionArrows();
+        })();
+      </script>
     </div>
   </section>
 
@@ -612,13 +719,14 @@
           <i class="fas fa-copy"></i> <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{fechner2026segment,
-  title   = {Segment to Focus: Guiding Latent Action Models in the Presence of Distractors},
-  author  = {Fechner, Marcus and Adnan, Hamza and L{\"u}th, Constantin C. and
-             Jackson, Matthew T. and Zakharov, Alexey and Z{\"o}llner, J. Marius},
-  journal = {arXiv preprint},
-  year    = {2026},
-  url     = {https://segment-to-focus.github.io/}
+      <pre id="bibtex-code"><code>@misc{fechner2026segmentfocusguidinglatent,
+      title={Segment to Focus: Guiding Latent Action Models in the Presence of Distractors},
+      author={Marcus Fechner and Hamza Adnan and Constantin C. Lüth and Matthew T. Jackson and Alexey Zakharov and J. Marius Zöllner},
+      year={2026},
+      eprint={2602.02259},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2602.02259},
 }</code></pre>
     </div>
   </section>
