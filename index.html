@@ -3,518 +3,661 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- Primary Meta Tags -->
-  <!-- TODO: Replace with your paper title and author names -->
-  <meta name="title" content="PAPER_TITLE - AUTHOR_NAMES">
-  <!-- TODO: Write a compelling 150-160 character description of your research -->
-  <meta name="description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Add 5-10 relevant keywords for your research area -->
-  <meta name="keywords" content="KEYWORD1, KEYWORD2, KEYWORD3, machine learning, computer vision, AI">
-  <!-- TODO: List all authors -->
-  <meta name="author" content="FIRST_AUTHOR_NAME, SECOND_AUTHOR_NAME">
+  <meta name="title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
+  <meta name="description" content="MaskLAM restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making latent action models robust to visual distractors, with no labels or auxiliary losses.">
+  <meta name="keywords" content="latent action models, LAPO, MaskLAM, reinforcement learning, imitation learning, video pretraining, segmentation, SAM, visual distractors, world models, robotics">
+  <meta name="author" content="Marcus Fechner, Hamza Adnan, Constantin C. Lüth, Matthew T. Jackson, Alexey Zakharov, J. Marius Zöllner">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <!-- TODO: Replace with your institution or lab name -->
-  <meta property="og:site_name" content="INSTITUTION_OR_LAB_NAME">
-  <!-- TODO: Same as paper title above -->
-  <meta property="og:title" content="PAPER_TITLE">
-  <!-- TODO: Same as description above -->
-  <meta property="og:description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Replace with your actual website URL -->
-  <meta property="og:url" content="https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE">
-  <!-- TODO: Create a 1200x630px preview image and update path -->
-  <meta property="og:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="PAPER_TITLE - Research Preview">
-  <meta property="article:published_time" content="2024-01-01T00:00:00.000Z">
-  <meta property="article:author" content="FIRST_AUTHOR_NAME">
-  <meta property="article:section" content="Research">
-  <meta property="article:tag" content="KEYWORD1">
-  <meta property="article:tag" content="KEYWORD2">
+  <meta property="og:site_name" content="Segment to Focus">
+  <meta property="og:title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
+  <meta property="og:description" content="A lightweight fix that restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making LAMs robust to visual distractors.">
+  <meta property="og:url" content="https://segment-to-focus.github.io/">
+  <meta property="og:image" content="https://segment-to-focus.github.io/static/images/paper/teaser.png">
+  <meta property="og:image:alt" content="Overview of MaskLAM">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <!-- TODO: Replace with your lab/institution Twitter handle -->
-  <meta name="twitter:site" content="@YOUR_TWITTER_HANDLE">
-  <!-- TODO: Replace with first author's Twitter handle -->
-  <meta name="twitter:creator" content="@AUTHOR_TWITTER_HANDLE">
-  <!-- TODO: Same as paper title above -->
-  <meta name="twitter:title" content="PAPER_TITLE">
-  <!-- TODO: Same as description above -->
-  <meta name="twitter:description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Same as social preview image above -->
-  <meta name="twitter:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
-  <meta name="twitter:image:alt" content="PAPER_TITLE - Research Preview">
+  <meta name="twitter:title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
+  <meta name="twitter:description" content="MaskLAM restricts latent-action reconstruction to agent pixels via zero-shot segmentation masks, for robust latent actions under visual distractors.">
+  <meta name="twitter:image" content="https://segment-to-focus.github.io/static/images/paper/teaser.png">
 
   <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="PAPER_TITLE">
-  <meta name="citation_author" content="FIRST_AUTHOR_LAST, FIRST_AUTHOR_FIRST">
-  <meta name="citation_author" content="SECOND_AUTHOR_LAST, SECOND_AUTHOR_FIRST">
-  <meta name="citation_publication_date" content="2024">
-  <meta name="citation_conference_title" content="CONFERENCE_NAME">
-  <meta name="citation_pdf_url" content="https://YOUR_DOMAIN.com/static/pdfs/paper.pdf">
-  
+  <meta name="citation_title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
+  <meta name="citation_author" content="Fechner, Marcus">
+  <meta name="citation_author" content="Adnan, Hamza">
+  <meta name="citation_author" content="Lüth, Constantin C.">
+  <meta name="citation_author" content="Jackson, Matthew T.">
+  <meta name="citation_author" content="Zakharov, Alexey">
+  <meta name="citation_author" content="Zöllner, J. Marius">
+  <meta name="citation_publication_date" content="2026">
+
   <!-- Additional SEO -->
-  <meta name="theme-color" content="#2563eb">
-  <meta name="msapplication-TileColor" content="#2563eb">
+  <meta name="theme-color" content="#0d9488">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  
+
   <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://ajax.googleapis.com">
-  <link rel="preconnect" href="https://documentcloud.adobe.com">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
+  <title>Segment to Focus: Guiding Latent Action Models in the Presence of Distractors</title>
 
-  <!-- TODO: Replace with your paper title and authors -->
-  <title>PAPER_TITLE - AUTHOR_NAMES | Academic Research</title>
-  
-  <!-- Favicon and App Icons -->
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
   <link rel="apple-touch-icon" href="static/images/favicon.ico">
-  
-  <!-- Critical CSS - Load synchronously -->
+
   <link rel="stylesheet" href="static/css/bulma.min.css">
   <link rel="stylesheet" href="static/css/index.css">
-  
-  <!-- Non-critical CSS - Load asynchronously -->
+
   <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  
-  <!-- Fallback for browsers that don't support preload -->
   <noscript>
     <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
     <link rel="stylesheet" href="static/css/bulma-slider.min.css">
     <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   </noscript>
-  
-  <!-- Fonts - Optimized loading -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Defer non-critical JavaScript -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+
   <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
   <script defer src="static/js/fontawesome.all.min.js"></script>
   <script defer src="static/js/bulma-carousel.min.js"></script>
   <script defer src="static/js/bulma-slider.min.js"></script>
   <script defer src="static/js/index.js"></script>
-  
-  <!-- Structured Data for Academic Papers -->
+
+  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "ScholarlyArticle",
-    "headline": "PAPER_TITLE",
-    "description": "BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS",
+    "headline": "Segment to Focus: Guiding Latent Action Models in the Presence of Distractors",
+    "description": "MaskLAM restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making latent action models robust to visual distractors.",
     "author": [
-      {
-        "@type": "Person",
-        "name": "FIRST_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
-      },
-      {
-        "@type": "Person",
-        "name": "SECOND_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
-      }
+      {"@type": "Person", "name": "Marcus Fechner", "affiliation": {"@type": "Organization", "name": "Karlsruhe Institute of Technology"}},
+      {"@type": "Person", "name": "Hamza Adnan", "affiliation": {"@type": "Organization", "name": "University of Oxford"}},
+      {"@type": "Person", "name": "Constantin C. Lüth", "affiliation": {"@type": "Organization", "name": "Karlsruhe Institute of Technology"}},
+      {"@type": "Person", "name": "Matthew T. Jackson", "affiliation": {"@type": "Organization", "name": "University of Oxford"}},
+      {"@type": "Person", "name": "Alexey Zakharov", "affiliation": {"@type": "Organization", "name": "University of Oxford"}},
+      {"@type": "Person", "name": "J. Marius Zöllner", "affiliation": {"@type": "Organization", "name": "Karlsruhe Institute of Technology"}}
     ],
-    "datePublished": "2024-01-01",
-    "publisher": {
-      "@type": "Organization",
-      "name": "CONFERENCE_OR_JOURNAL_NAME"
-    },
-    "url": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE",
-    "image": "https://YOUR_DOMAIN.com/static/images/social_preview.png",
-    "keywords": ["KEYWORD1", "KEYWORD2", "KEYWORD3", "machine learning", "computer vision"],
-    "abstract": "FULL_ABSTRACT_TEXT_HERE",
-    "citation": "BIBTEX_CITATION_HERE",
-    "isAccessibleForFree": true,
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "mainEntity": {
-      "@type": "WebPage",
-      "@id": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE"
-    },
-    "about": [
-      {
-        "@type": "Thing",
-        "name": "RESEARCH_AREA_1"
-      },
-      {
-        "@type": "Thing", 
-        "name": "RESEARCH_AREA_2"
-      }
-    ]
+    "datePublished": "2026",
+    "url": "https://segment-to-focus.github.io/",
+    "image": "https://segment-to-focus.github.io/static/images/paper/teaser.png",
+    "keywords": ["latent action models", "reinforcement learning", "segmentation", "visual distractors", "video pretraining"]
   }
   </script>
-  
-  <!-- Website/Organization Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "INSTITUTION_OR_LAB_NAME",
-    "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico",
-    "sameAs": [
-      "https://twitter.com/YOUR_TWITTER_HANDLE",
-      "https://github.com/YOUR_GITHUB_USERNAME"
-    ]
-  }
-  </script>
+
+  <style>
+    :root {
+      --accent: #0d9488;        /* teal */
+      --accent-dark: #0f766e;
+      --accent-soft: #ccfbf1;
+      --ink: #1a202c;
+      --muted: #5a6472;
+    }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--ink); }
+    .publication-title { font-weight: 800; letter-spacing: -0.02em; line-height: 1.12; }
+    .method-name { color: var(--accent-dark); font-weight: 700; }
+    a { color: var(--accent-dark); }
+
+    /* Hero */
+    .hero.paper-hero { background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%); padding-top: 2.5rem; }
+    .publication-links .button.is-dark { background-color: #1f2733; transition: transform .12s ease, background-color .12s ease; }
+    .publication-links .button.is-dark:hover { background-color: var(--accent-dark); transform: translateY(-2px); }
+    .author-block a { color: var(--ink); border-bottom: 2px solid transparent; }
+    .author-block a:hover { border-bottom-color: var(--accent); }
+    .affil-sup { color: var(--accent-dark); font-weight: 700; }
+    .venue-tag { display:inline-block; margin-top:.4rem; padding:.2rem .8rem; border:1px solid var(--accent); border-radius: 999px; color: var(--accent-dark); font-weight:600; font-size:.85rem; }
+
+    /* Section headings */
+    .section-title { font-weight: 800; letter-spacing:-0.01em; }
+    .content.has-text-justified p { line-height: 1.75; }
+
+    /* Figures */
+    figure.paper-figure { margin: 0 auto; text-align: center; }
+    figure.paper-figure img { border-radius: 8px; }
+    .fig-caption { font-size: .92rem; color: var(--muted); margin-top: .9rem; line-height:1.6; max-width: 900px; margin-left:auto; margin-right:auto; }
+    .fig-caption b { color: var(--ink); }
+    .crisp { image-rendering: pixelated; image-rendering: crisp-edges; }
+    .bordered { border: 1px solid #e2e8f0; }
+
+    /* TL;DR / contribution cards */
+    .contrib-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+    .contrib-card { background:#fff; border:1px solid #e6ebf0; border-top: 4px solid var(--accent); border-radius: 12px; padding: 1.5rem 1.4rem; box-shadow: 0 2px 14px rgba(15,118,110,.06); }
+    .contrib-card .icon-badge { font-size: 1.4rem; color: var(--accent-dark); margin-bottom:.6rem; }
+    .contrib-card h3 { font-weight: 700; margin-bottom:.5rem; font-size:1.1rem; }
+    .contrib-card p { color: var(--muted); font-size:.95rem; line-height:1.55; }
+
+    /* Highlight strip */
+    .highlight-strip { background: var(--accent-dark); color:#fff; border-radius:14px; padding: 1.6rem 1.8rem; }
+    .highlight-strip .stat { text-align:center; }
+    .highlight-strip .stat .num { font-size: 2.2rem; font-weight: 800; line-height:1; }
+    .highlight-strip .stat .lbl { font-size:.9rem; opacity:.9; margin-top:.4rem; }
+
+    /* Results table */
+    .results-table-wrap { overflow-x: auto; }
+    table.results { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .9rem; }
+    table.results th, table.results td { padding: .5rem .55rem; text-align: center; white-space: nowrap; }
+    table.results thead th { border-bottom: 2px solid #cbd5e0; font-weight: 700; }
+    table.results thead .group { border-bottom: 1px solid #cbd5e0; color: var(--accent-dark); text-transform: uppercase; font-size:.72rem; letter-spacing:.04em; }
+    table.results td.method, table.results th.method { text-align: left; font-weight: 600; }
+    table.results tbody tr { border-bottom: 1px solid #edf1f5; }
+    table.results .best { font-weight: 800; color: var(--accent-dark); }
+    table.results tr.ours { background: #f0fdfa; }
+    table.results tr.privileged td { color: var(--muted); font-style: italic; }
+    table.results .err { color: #94a3b8; font-size: .82em; }
+    table.results .rowsep td { border-top: 2px solid #cbd5e0; padding:0; height:0; }
+
+    /* Video comparison placeholder */
+    .video-pair { display:grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .video-slot { background:#0f172a; border-radius: 12px; aspect-ratio: 4/3; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; border: 2px dashed #334155; }
+    .video-slot .fas { font-size: 2rem; margin-bottom:.6rem; }
+    .video-slot video { width:100%; height:100%; object-fit: contain; border-radius: 12px; }
+    .vid-label { text-align:center; font-weight:700; margin-top:.6rem; }
+    .vid-label.lapo { color:#b45309; }
+    .vid-label.ours { color: var(--accent-dark); }
+    .placeholder-note { background:#fffbeb; border:1px solid #fde68a; color:#92400e; border-radius:10px; padding:.9rem 1.1rem; font-size:.9rem; }
+
+    @media (max-width: 640px) {
+      .video-pair { grid-template-columns: 1fr; }
+    }
+
+    /* BibTeX */
+    #BibTeX pre { background: #0f172a; color:#e2e8f0; border-radius: 10px; padding: 1.3rem; overflow:auto; }
+    .bibtex-header { display:flex; align-items:center; justify-content:space-between; }
+  </style>
 </head>
 <body>
 
-
-  <!-- Scroll to Top Button -->
   <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <!-- More Works Dropdown -->
-  <div class="more-works-container">
-    <button class="more-works-btn" onclick="toggleMoreWorks()" title="View More Works from Our Lab">
-      <i class="fas fa-flask"></i>
-      More Works
-      <i class="fas fa-chevron-down dropdown-arrow"></i>
-    </button>
-    <div class="more-works-dropdown" id="moreWorksDropdown">
-      <div class="dropdown-header">
-        <h4>More Works from Our Lab</h4>
-        <button class="close-btn" onclick="toggleMoreWorks()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="works-list">
-        <!-- TODO: Replace with your lab's related works -->
-        <a href="https://arxiv.org/abs/PAPER_ID_1" class="work-item" target="_blank">
-          <div class="work-info">
-            <!-- TODO: Replace with actual paper title -->
-            <h5>Paper Title 1</h5>
-            <!-- TODO: Replace with brief description -->
-            <p>Brief description of the work and its main contribution.</p>
-            <!-- TODO: Replace with venue and year -->
-            <span class="work-venue">Conference/Journal 2024</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-        <!-- TODO: Add more related works or remove extra items -->
-        <a href="https://arxiv.org/abs/PAPER_ID_2" class="work-item" target="_blank">
-          <div class="work-info">
-            <h5>Paper Title 2</h5>
-            <p>Brief description of the work and its main contribution.</p>
-            <span class="work-venue">Conference/Journal 2023</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-        <a href="https://arxiv.org/abs/PAPER_ID_3" class="work-item" target="_blank">
-          <div class="work-info">
-            <h5>Paper Title 3</h5>
-            <p>Brief description of the work and its main contribution.</p>
-            <span class="work-venue">Conference/Journal 2023</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-
   <main id="main-content">
-  <section class="hero">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero paper-hero">
     <div class="hero-body">
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <!-- TODO: Replace with your paper title -->
-            <h1 class="title is-1 publication-title">Academic Project Page</h1>
+            <h1 class="title is-2 publication-title">Segment to Focus:<br>Guiding Latent Action Models in the Presence of Distractors</h1>
+
             <div class="is-size-5 publication-authors">
-              <!-- TODO: Replace with your paper authors and their personal links -->
-              <span class="author-block">
-                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a><sup>*</sup>,</span>
-                <span class="author-block">
-                  <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a><sup>*</sup>,</span>
-                  <span class="author-block">
-                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a>
-                  </span>
-                  </div>
+              <span class="author-block"><a href="https://www.marcusfechner.com" target="_blank" rel="noopener">Marcus Fechner</a><sup class="affil-sup">1,*</sup>,</span>
+              <span class="author-block">Hamza Adnan<sup class="affil-sup">2,*</sup>,</span>
+              <span class="author-block">Constantin C. Lüth<sup class="affil-sup">1</sup>,</span>
+              <span class="author-block">Matthew T. Jackson<sup class="affil-sup">2</sup>,</span>
+              <span class="author-block">Alexey Zakharov<sup class="affil-sup">2</sup>,</span>
+              <span class="author-block">J. Marius Zöllner<sup class="affil-sup">1</sup></span>
+            </div>
 
-                  <div class="is-size-5 publication-authors">
-                    <!-- TODO: Replace with your institution and conference/journal info -->
-                    <span class="author-block">Institution Name<br>Conference name and year</span>
-                    <!-- TODO: Remove this line if no equal contribution -->
-                    <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
-                  </div>
+            <div class="is-size-6 publication-authors" style="margin-top:.6rem;">
+              <span class="author-block"><sup class="affil-sup">1</sup>Karlsruhe Institute of Technology&nbsp;&nbsp;·&nbsp;&nbsp;<sup class="affil-sup">2</sup>University of Oxford</span>
+              <br><span class="eql-cntrb"><small><sup class="affil-sup">*</sup>Equal contribution</small></span>
+              <br><span class="venue-tag">Preprint 2026</span>
+            </div>
 
-                  <div class="column has-text-centered">
-                    <div class="publication-links">
-                         <!-- TODO: Update with your arXiv paper ID -->
-                      <span class="link-block">
-                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
-                        class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="fas fa-file-pdf"></i>
-                        </span>
-                        <span>Paper</span>
-                      </a>
-                    </span>
-
-                    <!-- TODO: Add your supplementary material PDF or remove this section -->
-                    <span class="link-block">
-                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                      </span>
-                      <span>Supplementary</span>
-                    </a>
-                  </span>
-
-                  <!-- TODO: Replace with your GitHub repository URL -->
-                  <span class="link-block">
-                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
+            <div class="column has-text-centered" style="margin-top:1.3rem;">
+              <div class="publication-links">
+                <!-- TODO: replace # with the arXiv abstract URL once public -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="arXiv (coming soon)">
+                    <span class="icon"><i class="ai ai-arxiv"></i></span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <!-- TODO: replace # with the code repository URL (released upon acceptance) -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="Code (coming soon)">
+                    <span class="icon"><i class="fab fa-github"></i></span>
                     <span>Code</span>
                   </a>
                 </span>
-
-                <!-- TODO: Update with your arXiv paper ID -->
+                <!-- TODO: replace # with the DCS dataset URL -->
                 <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="Dataset:Distracting Control Suite (coming soon)">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Data: DCS</span>
+                  </a>
+                </span>
+                <!-- TODO: replace # with the DMW dataset URL -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="Dataset:Distracting Meta-World (coming soon)">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Data: DMW</span>
+                  </a>
+                </span>
+                <!-- TODO: replace # with the Frogger dataset URL -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="Dataset:Frogger (coming soon)">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Data: Frogger</span>
+                  </a>
+                </span>
+                <!-- TODO: replace # with the Frostbite dataset URL -->
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark" title="Dataset:Frostbite (coming soon)">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span>Data: Frostbite</span>
+                  </a>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-<!-- Teaser video-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <!-- TODO: Replace with your teaser video -->
-      <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata">
-        <!-- TODO: Add your video file path here -->
-        <source src="static/videos/banner_video.mp4" type="video/mp4">
-      </video>
-      <!-- TODO: Replace with your video description -->
-      <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
-      </h2>
-    </div>
-  </div>
-</section>
-<!-- End teaser video -->
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <!-- TODO: Replace with your paper abstract -->
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ullamcorper tellus sed ante aliquam tempus. Etiam porttitor urna feugiat nibh elementum, et tempor dolor mattis. Donec accumsan enim augue, a vulputate nisi sodales sit amet. Proin bibendum ex eget mauris cursus euismod nec et nibh. Maecenas ac gravida ante, nec cursus dui. Vivamus purus nibh, placerat ac purus eget, sagittis vestibulum metus. Sed vestibulum bibendum lectus gravida commodo. Pellentesque auctor leo vitae sagittis suscipit.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-<!-- Image carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-       <div class="item">
-        <!-- TODO: Replace with your research result images -->
-        <img src="static/images/carousel1.jpg" alt="First research result visualization" loading="lazy"/>
-        <!-- TODO: Replace with description of this result -->
-        <h2 class="subtitle has-text-centered">
-          First image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel2.jpg" alt="Second research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-          Second image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel3.jpg" alt="Third research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-         Third image description.
-       </h2>
-     </div>
-     <div class="item">
-      <!-- Your image here -->
-      <img src="static/images/carousel4.jpg" alt="Fourth research result visualization" loading="lazy"/>
-      <h2 class="subtitle has-text-centered">
-        Fourth image description.
-      </h2>
-    </div>
-  </div>
-</div>
-</div>
-</section>
-<!-- End image carousel -->
-
-
-
-
-<!-- Youtube video -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <!-- Paper video. -->
-      <h2 class="title is-3">Video Presentation</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <!-- TODO: Replace with your YouTube video ID -->
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End youtube video -->
-
-
-<!-- Video carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3">Another Carousel</h2>
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-video1">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video1" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel1.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video2">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video2" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel2.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video3">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video3" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel3.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End video carousel -->
-
-
-
-
-
-
-<!-- Paper poster -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title">Poster</h2>
-
-      <!-- TODO: Replace with your poster PDF -->
-      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
-          </iframe>
-        
+  <!-- ============ TEASER ============ -->
+  <section class="hero teaser">
+    <div class="container is-max-widescreen">
+      <div class="hero-body">
+        <figure class="paper-figure">
+          <img src="static/images/paper/teaser.png" alt="Overview of MaskLAM" style="width:100%; max-width:1100px;">
+          <figcaption class="fig-caption">
+            <b>Overview of <span class="method-name">MaskLAM</span>.</b> Latent action models like LAPO infer a latent action
+            \(z_t\) from observation-only video by jointly training an inverse (IDM) and forward dynamics model (FDM).
+            Under visual distractors, LAPO's reconstruction loss pressures \(z_t\) to encode exogenous variance and
+            downstream policies fail. Since endogenous and exogenous factors are typically spatially disjoint in pixel space,
+            <span class="method-name">MaskLAM</span> restricts the loss to agent pixels via a binary mask
+            \(M_{t+1}\) obtained zero-shot from SAM&nbsp;2.1&nbsp;(1), so distractor pixels contribute no gradient to
+            \(z_t\). (2) On cheetah-run under distractors, the latent action space collapses into entangled clusters
+            for LAPO but forms a smooth manifold for MaskLAM (top); Eigen-CAM saliency shifts from the background distractors to
+            the agent (bottom).
+          </figcaption>
+        </figure>
       </div>
     </div>
   </section>
-<!--End paper poster -->
 
+  <!-- ============ TL;DR (abstract summary + contributions) ============ -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title has-text-centered" style="margin-bottom:1.5rem;">TL;DR</h2>
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified" style="font-size:1.08rem;">
+            <p>
+              Latent action models learn actions from action-free video, but visual distractors (moving backgrounds,
+              camera shake, other moving objects) make them encode <b>exogenous motion</b> instead of agent-controlled
+              dynamics, so fine-tuned policies fail. Since agent and distractor pixels are typically <b>spatially
+              separated</b>, <span class="method-name">MaskLAM</span> restricts the reconstruction loss to agent pixels
+              using zero-shot SAM masks, so only agent-controlled dynamics shape the latent action: <b>no labels, no
+              auxiliary losses, no architecture changes</b>. Under distractors this yields up to <b>3.51×</b> lower probe
+              MSE and <b>4.97×</b> higher return than LAPO, narrowing the gap to methods that rely on ground-truth action
+              supervision.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="contrib-grid" style="margin-top:1.5rem;">
+        <div class="contrib-card">
+          <div class="icon-badge"><i class="fas fa-crop-alt"></i></div>
+          <h3>Spatial separability</h3>
+          <p>The abstract Ex-BMDP factorization is, in pixel space, mostly <b>spatial</b>: agent actions change agent
+          pixels; distractors change everything else. This turns a modeling problem into a masking problem.</p>
+        </div>
+        <div class="contrib-card">
+          <div class="icon-badge"><i class="fas fa-mask"></i></div>
+          <h3>Mask the loss, not the model</h3>
+          <p>MaskLAM restricts the forward-dynamics reconstruction loss to agent pixels. Distractor pixels contribute
+          <b>no gradient</b> to the latent action: no auxiliary losses, no labels, no architectural changes to LAPO.</p>
+        </div>
+        <div class="contrib-card">
+          <div class="icon-badge"><i class="fas fa-chart-line"></i></div>
+          <h3>Robust &amp; label-efficient</h3>
+          <p>Up to <b>3.51×</b> lower probe MSE and <b>4.97×</b> higher return than LAPO under distractors, with compact
+          latents, smaller label budgets, and graceful degradation under imperfect masks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- ============ THE PROBLEM ============ -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title has-text-centered">The problem: distractors hijack the latent action</h2>
+      <div class="content has-text-justified">
+        <p>
+          Standard LAMs rely on <i>global</i> reconstruction objectives that force the model to encode the entire scene
+          to predict future frames. With moving backgrounds, camera shake, or additional moving agents, pixel
+          reconstruction has no reason to prefer agent dynamics over background variation; the latent encodes whatever
+          varies most. As a result, the latent action space of LAPO no longer recovers the true action, and downstream
+          policies fail.
+        </p>
+      </div>
+      <figure class="paper-figure" style="margin-top:1.5rem;">
+        <div style="display:inline-grid; grid-template-columns: auto auto; gap:.6rem 1.4rem; align-items:center;">
+          <img class="crisp bordered" src="static/images/paper/dcs_no_distractor.png" alt="DCS vanilla cheetah-run" style="width:180px;">
+          <img class="crisp bordered" src="static/images/paper/dmw_no_distractor.png" alt="DMW vanilla window-open" style="width:180px;">
+          <img class="crisp bordered" src="static/images/paper/dcs_distractor.png" alt="DCS distractor cheetah-run" style="width:180px;">
+          <img class="crisp bordered" src="static/images/paper/dmw_distractor.png" alt="DMW distractor window-open" style="width:180px;">
+          <div style="font-size:.85rem; color:var(--muted); grid-column:1;">(a) cheetah-run, DCS</div>
+          <div style="font-size:.85rem; color:var(--muted); grid-column:2;">(b) window-open, DMW</div>
+        </div>
+        <figcaption class="fig-caption">
+          <b>Environments (top: vanilla, bottom: distractor).</b> The <b>Distracting Control Suite (DCS)</b> adds dynamic
+          background videos, agent color randomization, and camera shake; <b>Distracting Meta-World (DMW)</b> adds dynamic
+          background video distractors. We evaluate 14 tasks across the two benchmarks at 64×64 and 128×128 pixels.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
 
-<!--BibTex citation -->
+  <!-- ============ METHOD ============ -->
+  <section class="section">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 section-title has-text-centered">Method: a masked forward-dynamics loss</h2>
+      <div class="container is-max-desktop">
+        <div class="content has-text-justified">
+          <p>
+            Prior work fixes the contamination of \(z_t\) at the representation level: action supervision,
+            object-centric slots, or auxiliary optical-flow losses. <span class="method-name">MaskLAM</span> takes a
+            different route: instead of modifying the encoder or adding losses, we modify the <b>prediction target</b> to
+            exclude exogenous dynamics from the learning signal. Given a binary agent mask \(M_{t+1}\), we
+            restrict the FDM loss to agent pixels:
+          </p>
+          <p class="has-text-centered" style="margin: 1.4rem 0;">
+            $$\mathcal{L}_{\text{FDM}}^{\text{MaskLAM}} = \frac{1}{\lVert M_{t+1}\rVert_1}\,\bigl\lVert M_{t+1} \odot (\hat{o}_{t+1} - o_{t+1}) \bigr\rVert_2^2$$
+          </p>
+          <p>
+            The loss is zero on distractor pixels, so where \(M_{t+1} = 0\) the residual is zeroed
+            before it can propagate into \(z_t\). Encoding exogenous transitions can no longer reduce the
+            loss, so the optimization stops pressuring the latent to capture distractor dynamics. Crucially we mask the
+            <b>loss</b>, not the input: the IDM and FDM still see the full observation (plus the mask as a hint channel),
+            so they can discover endogenous context the mask misses (e.g. a gripper's contact surface), while
+            \(z_t\) is shaped only by endogenous prediction errors.
+          </p>
+        </div>
+      </div>
+      <figure class="paper-figure" style="margin-top:1rem;">
+        <img src="static/images/paper/pipeline.png" alt="MaskLAM pipeline" style="width:100%; max-width:1000px;">
+        <figcaption class="fig-caption">
+          <b>Simplified MaskLAM stage-1 pipeline.</b> Conditioned on a target-agent prompt, a pre-trained SAM&nbsp;2.1
+          model extracts agent masks from the observations. The IDM predicts the latent action \(z_t\); the
+          FDM reconstructs \(\hat{o}_{t+1}\). The forward-dynamics loss is spatially restricted to agent pixels
+          (white) via \(M_{t+1}\), so distractor pixels (black) contribute no gradient.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ MAIN RESULTS TABLE ============ -->
+  <section class="section hero is-light">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 section-title has-text-centered">Main results</h2>
+      <div class="container is-max-desktop content has-text-justified">
+        <p>
+          Across both vanilla and distractor settings, MaskLAM achieves the lowest probe error among label-free methods
+          (LAPO, LAPO-Slots, LAOF), and the gap widens when distractors are added. <b>MaskLAM@GT</b> (simulator masks)
+          and <b>MaskLAM@SAM</b> (zero-shot SAM&nbsp;2.1 masks) are within noise of each other; off-the-shelf
+          segmentation is sufficient. Better alignment translates to better policies, with the largest gains under
+          distractors.
+        </p>
+      </div>
+      <div class="results-table-wrap">
+        <table class="results">
+          <thead>
+            <tr>
+              <th class="method" rowspan="2">Method</th>
+              <th class="group" colspan="4">Distracting Control Suite</th>
+              <th class="group" colspan="4">Distracting Meta-World</th>
+            </tr>
+            <tr>
+              <th>NMSE&nbsp;↓<br><span class="err">Vanilla</span></th>
+              <th>NMSE&nbsp;↓<br><span class="err">Distractor</span></th>
+              <th>NR&nbsp;↑<br><span class="err">Vanilla</span></th>
+              <th>NR&nbsp;↑<br><span class="err">Distractor</span></th>
+              <th>NMSE&nbsp;↓<br><span class="err">Vanilla</span></th>
+              <th>NMSE&nbsp;↓<br><span class="err">Distractor</span></th>
+              <th>NSR&nbsp;↑<br><span class="err">Vanilla</span></th>
+              <th>NSR&nbsp;↑<br><span class="err">Distractor</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="method">LAPO</td>
+              <td>0.297<span class="err">±.117</span></td>
+              <td>0.511<span class="err">±.034</span></td>
+              <td>0.236<span class="err">±.028</span></td>
+              <td>0.076<span class="err">±.009</span></td>
+              <td class="best">0.074<span class="err">±.004</span></td>
+              <td>0.309<span class="err">±.009</span></td>
+              <td class="best">0.851<span class="err">±.026</span></td>
+              <td>0.636<span class="err">±.015</span></td>
+            </tr>
+            <tr class="privileged">
+              <td class="method">LAOM-Labels <span class="err" style="font-style:normal;">(uses GT actions)</span></td>
+              <td>0.211<span class="err">±.006</span></td>
+              <td>0.216<span class="err">±.003</span></td>
+              <td class="best">0.608<span class="err">±.017</span></td>
+              <td class="best">0.566<span class="err">±.019</span></td>
+              <td>0.114<span class="err">±.010</span></td>
+              <td>0.142<span class="err">±.008</span></td>
+              <td>0.727<span class="err">±.028</span></td>
+              <td>0.781<span class="err">±.033</span></td>
+            </tr>
+            <tr>
+              <td class="method">LAOF</td>
+              <td>0.639<span class="err">±.045</span></td>
+              <td>0.506<span class="err">±.019</span></td>
+              <td>0.072<span class="err">±.017</span></td>
+              <td>0.094<span class="err">±.020</span></td>
+              <td>0.185<span class="err">±.037</span></td>
+              <td>0.453<span class="err">±.057</span></td>
+              <td>0.716<span class="err">±.118</span></td>
+              <td>0.577<span class="err">±.079</span></td>
+            </tr>
+            <tr>
+              <td class="method">LAPO-Slots</td>
+              <td>0.352<span class="err">±.012</span></td>
+              <td>0.657<span class="err">±.029</span></td>
+              <td>0.126<span class="err">±.021</span></td>
+              <td>0.045<span class="err">±.008</span></td>
+              <td>0.109<span class="err">±.006</span></td>
+              <td>0.245<span class="err">±.048</span></td>
+              <td>0.833<span class="err">±.032</span></td>
+              <td>0.827<span class="err">±.023</span></td>
+            </tr>
+            <tr class="rowsep"><td colspan="9"></td></tr>
+            <tr class="ours">
+              <td class="method">MaskLAM@GT</td>
+              <td class="best">0.205<span class="err">±.006</span></td>
+              <td class="best">0.206<span class="err">±.009</span></td>
+              <td>0.513<span class="err">±.029</span></td>
+              <td>0.378<span class="err">±.030</span></td>
+              <td>0.082<span class="err">±.004</span></td>
+              <td class="best">0.088<span class="err">±.004</span></td>
+              <td>0.828<span class="err">±.036</span></td>
+              <td class="best">0.843<span class="err">±.021</span></td>
+            </tr>
+            <tr class="ours">
+              <td class="method">MaskLAM@SAM</td>
+              <td>0.213<span class="err">±.010</span></td>
+              <td>0.233<span class="err">±.037</span></td>
+              <td>0.493<span class="err">±.036</span></td>
+              <td>0.358<span class="err">±.040</span></td>
+              <td>0.078<span class="err">±.003</span></td>
+              <td>0.090<span class="err">±.005</span></td>
+              <td>0.828<span class="err">±.022</span></td>
+              <td>0.832<span class="err">±.031</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fig-caption" style="margin-top:1rem;">
+        <b>Latent action quality (NMSE) and downstream behavior-cloning performance (NR/NSR)</b>, aggregated over
+        environment suites, mean ± std over 3 seeds. <b class="method-name">Bold</b> marks the best value per column;
+        <span style="color:var(--accent-dark);">teal rows</span> are ours. <i>LAOM-Labels uses privileged ground-truth
+        action supervision during pre-training and serves as an upper-bound reference.</i>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ UMAP ============ -->
+  <section class="section">
+    <div class="container is-max-widescreen">
+      <h2 class="title is-3 section-title has-text-centered">MaskLAM recovers action-aligned latents</h2>
+      <figure class="paper-figure">
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:flex-end;">
+          <div><img class="bordered" src="static/images/paper/umap_lapo.png" style="width:170px;" alt="UMAP LAPO"><div style="font-size:.85rem; margin-top:.4rem;">LAPO</div></div>
+          <div><img class="bordered" src="static/images/paper/umap_laom_labels.png" style="width:170px;" alt="UMAP LAOM-Labels"><div style="font-size:.85rem; margin-top:.4rem;">LAOM-Labels</div></div>
+          <div><img class="bordered" src="static/images/paper/umap_laof.png" style="width:170px;" alt="UMAP LAOF"><div style="font-size:.85rem; margin-top:.4rem;">LAOF</div></div>
+          <div><img class="bordered" src="static/images/paper/umap_lapo_slots.png" style="width:170px;" alt="UMAP LAPO-Slots"><div style="font-size:.85rem; margin-top:.4rem;">LAPO-Slots</div></div>
+          <div><img class="bordered" src="static/images/paper/umap_masklam.png" style="width:170px; outline:3px solid var(--accent);" alt="UMAP MaskLAM"><div style="font-size:.85rem; margin-top:.4rem;" class="method-name">MaskLAM</div></div>
+        </div>
+        <figcaption class="fig-caption">
+          <b>UMAP projection of the latent action space</b> on cheetah-run (DCS, distractor), colored by the 4th
+          ground-truth action dimension. A well-aligned latent space shows a smooth color gradient along the projection.
+          MaskLAM produces a clean, monotonically structured manifold, while LAPO and LAOF collapse into entangled
+          clusters with no clear correspondence to the ground-truth action.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ EIGEN-CAM ============ -->
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title has-text-centered">MaskLAM focuses on the agent, not the distractor</h2>
+      <figure class="paper-figure">
+        <div style="display:inline-flex; gap:1.6rem;">
+          <div><img class="crisp bordered" src="static/images/paper/eigencam_lapo.png" style="width:240px;" alt="Eigen-CAM LAPO"><div class="vid-label lapo">LAPO</div></div>
+          <div><img class="crisp bordered" src="static/images/paper/eigencam_masklam.png" style="width:240px; outline:3px solid var(--accent);" alt="Eigen-CAM MaskLAM"><div class="vid-label ours">MaskLAM</div></div>
+        </div>
+        <figcaption class="fig-caption">
+          <b>Eigen-CAM saliency on cheetah-run (DCS, distractor).</b> Warmer colors indicate higher influence on the
+          predicted latent action. LAPO's saliency falls on the distractor background, while MaskLAM's covers the cheetah
+          body and extends to its contact surface with the ground, including pixels outside the supervising mask, showing
+          the IDM learns endogenous context from data beyond what the mask directly supervises.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ ATTENTION VIDEO COMPARISON (placeholder) ============ -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 section-title has-text-centered">Attention over time: LAPO vs. MaskLAM</h2>
+      <p class="content has-text-centered" style="color:var(--muted);">
+        Per-environment saliency videos show LAPO's attention drifting onto moving distractors while MaskLAM stays locked
+        on the agent throughout the episode.
+      </p>
+
+      <div class="placeholder-note" style="margin:1rem auto 1.6rem; max-width:760px;">
+        <i class="fas fa-info-circle"></i>&nbsp; <b>Videos not yet added.</b> Drop the comparison clips into
+        <code>static/videos/attention/</code> (e.g. <code>cheetah_lapo.mp4</code> / <code>cheetah_masklam.mp4</code>) and
+        uncomment the <code>&lt;source&gt;</code> tags below; the layout is already wired up. Add one row per environment.
+      </div>
+
+      <!-- Environment 1 -->
+      <h3 class="title is-5 has-text-centered" style="margin-bottom:.8rem;">cheetah-run (DCS)</h3>
+      <div class="video-pair">
+        <div>
+          <div class="video-slot">
+            <video autoplay muted loop playsinline style="display:none;">
+              <!-- TODO: <source src="static/videos/attention/cheetah_lapo.mp4" type="video/mp4"> -->
+            </video>
+            <i class="fas fa-film"></i><span>LAPO clip: add file</span>
+          </div>
+          <div class="vid-label lapo">LAPO: attends to distractors</div>
+        </div>
+        <div>
+          <div class="video-slot">
+            <video autoplay muted loop playsinline style="display:none;">
+              <!-- TODO: <source src="static/videos/attention/cheetah_masklam.mp4" type="video/mp4"> -->
+            </video>
+            <i class="fas fa-film"></i><span>MaskLAM clip: add file</span>
+          </div>
+          <div class="vid-label ours">MaskLAM: attends to the agent</div>
+        </div>
+      </div>
+      <!-- TODO: duplicate the block above for walker-run, hopper-hop, humanoid-walk, and the DMW tasks. -->
+    </div>
+  </section>
+
+  <!-- ============ BIBTEX ============ -->
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <div class="bibtex-header">
         <h2 class="title">BibTeX</h2>
         <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-          <i class="fas fa-copy"></i>
-          <span class="copy-text">Copy</span>
+          <i class="fas fa-copy"></i> <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{YourPaperKey2024,
-  title={Your Paper Title Here},
-  author={First Author and Second Author and Third Author},
-  journal={Conference/Journal Name},
-  year={2024},
-  url={https://your-domain.com/your-project-page}
+      <pre id="bibtex-code"><code>@article{fechner2026segment,
+  title   = {Segment to Focus: Guiding Latent Action Models in the Presence of Distractors},
+  author  = {Fechner, Marcus and Adnan, Hamza and L{\"u}th, Constantin C. and
+             Jackson, Matthew T. and Zakharov, Alexey and Z{\"o}llner, J. Marius},
+  journal = {arXiv preprint},
+  year    = {2026},
+  url     = {https://segment-to-focus.github.io/}
 }</code></pre>
     </div>
-</section>
-<!--End BibTex citation -->
+  </section>
 
+  </main>
 
   <footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              This page was built using the
+              <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+              adapted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page. You are free to
+              borrow the source code of this website; please link back to this page in the footer. This website is licensed
+              under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<!-- Statcounter tracking code -->
-  
-<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
-
-    <!-- End of Statcounter Code -->
-
-  </body>
-  </html>
+  <script>
+    function scrollToTop(){ window.scrollTo({top:0, behavior:'smooth'}); }
+    window.addEventListener('scroll', function(){
+      var b = document.querySelector('.scroll-to-top');
+      if(!b) return;
+      b.style.display = window.scrollY > 400 ? 'flex' : 'none';
+    });
+    function copyBibTeX(){
+      var code = document.getElementById('bibtex-code').innerText;
+      navigator.clipboard.writeText(code).then(function(){
+        var t = document.querySelector('.copy-text');
+        if(t){ var o = t.textContent; t.textContent = 'Copied!'; setTimeout(function(){ t.textContent = o; }, 1500); }
+      });
+    }
+  </script>
+</body>
+</html>
