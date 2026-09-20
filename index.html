@@ -217,7 +217,7 @@
       text-align: center;
     }
 
-    figure.paper-figure > img {
+    figure.paper-figure>img {
       display: block;
       width: 100%;
       max-width: none;
@@ -236,7 +236,7 @@
       text-align: justify;
     }
 
-    figure.paper-figure > .fig-caption {
+    figure.paper-figure>.fig-caption {
       display: table-caption;
       caption-side: bottom;
     }
@@ -248,11 +248,6 @@
 
     .fig-caption b {
       color: var(--ink);
-    }
-
-    .crisp {
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
     }
 
     .bordered {
@@ -444,7 +439,7 @@
       margin: 1.6rem auto 0;
     }
 
-    .vid-carousel + .fig-caption {
+    .vid-carousel+.fig-caption {
       max-width: 940px;
       margin-left: auto;
       margin-right: auto;
@@ -767,7 +762,7 @@
       </div>
     </section>
 
-    <!-- ============ THE PROBLEM ============ -->
+    <!-- ============ PROBLEM + SALIENCY ============ -->
     <section class="section hero is-light">
       <div class="container is-max-desktop">
         <h2 class="title is-3 section-title has-text-centered">The problem: distractors hijack the latent action</h2>
@@ -775,33 +770,152 @@
           <p>
             Standard LAMs rely on <i>global</i> reconstruction objectives that force the model to encode the entire
             scene
-            to predict future frames. With moving backgrounds, camera shake, or additional moving agents, pixel
-            reconstruction has no reason to prefer agent dynamics over background variation; the latent encodes whatever
-            varies most. As a result, the latent action space of LAPO no longer recovers the true action, and downstream
-            policies fail.
+            to predict future frames. With moving backgrounds, camera shake, or other moving agents, pixel
+            reconstruction has no reason to prefer agent dynamics over other variation; the latent encodes whatever
+            signal has the highest variance. As a result, the latent action space of LAPO no longer recovers the true
+            action, and downstream policies fail.
+          </p>
+          <p>
+            We study this on the <b>Distracting Control Suite (DCS)</b>, which adds dynamic background videos, agent
+            color randomization, and camera shake, and on <b>Distracting Meta-World (DMW)</b>, which adds dynamic
+            background video distractors. Eigen-CAM on those benchmarks visualizes the failure cases: LAPO attends to
+            the distractor, while <span class="method-name">MaskLAM</span> maintains focus on the agent.
           </p>
         </div>
-        <figure class="paper-figure" style="margin-top:1.5rem; width:100%;">
-          <div style="display:inline-grid; grid-template-columns: auto auto; gap:.6rem 1.4rem; align-items:center;">
-            <img class="crisp bordered" src="static/images/paper/dcs_no_distractor.png" alt="DCS vanilla cheetah-run"
-              style="width:180px;">
-            <img class="crisp bordered" src="static/images/paper/dmw_no_distractor.png" alt="DMW vanilla window-open"
-              style="width:180px;">
-            <img class="crisp bordered" src="static/images/paper/dcs_distractor.png" alt="DCS distractor cheetah-run"
-              style="width:180px;">
-            <img class="crisp bordered" src="static/images/paper/dmw_distractor.png" alt="DMW distractor window-open"
-              style="width:180px;">
-            <div style="font-size:.85rem; color:var(--muted); grid-column:1;">(a) cheetah-run, DCS</div>
-            <div style="font-size:.85rem; color:var(--muted); grid-column:2;">(b) window-open, DMW</div>
+        <!-- ===== Video carousel: original / LAPO / MaskLAM per environment ===== -->
+        <div class="vid-carousel" id="attnCarousel">
+          <div class="carousel-stage">
+            <button class="carousel-btn prev" type="button" aria-label="Previous environment">&#8249;</button>
+            <div class="carousel-viewport">
+              <div class="carousel-track" id="attnTrack"></div>
+            </div>
+            <button class="carousel-btn next" type="button" aria-label="Next environment">&#8250;</button>
           </div>
-          <figcaption class="fig-caption">
-            <b>Environments (top: vanilla, bottom: distractor).</b> The <b>Distracting Control Suite (DCS)</b> adds
-            dynamic
-            background videos, agent color randomization, and camera shake; <b>Distracting Meta-World (DMW)</b> adds
-            dynamic
-            background video distractors. We evaluate 14 tasks across the two benchmarks at 64×64 and 128×128 pixels.
-          </figcaption>
-        </figure>
+          <div class="carousel-meta">
+            <span class="carousel-env" id="attnEnv"></span>
+            <div class="carousel-dots" id="attnDots"></div>
+          </div>
+        </div>
+
+        <p class="fig-caption" style="margin-top:1.2rem;">
+          <b>Eigen-CAM saliency on DCS and DMW.</b> Original shows the distractor scene. Warmer colors indicate higher
+          influence on the predicted latent action. LAPO's saliency often falls on the distractors, while
+          MaskLAM's covers the agent body and extends to contact surfaces, including pixels outside the supervising
+          mask, showing the IDM learns endogenous context from data beyond what the mask directly supervises. Use the
+          arrows to switch environments.
+        </p>
+
+        <script>
+          (function () {
+            var track = document.getElementById('attnTrack');
+            if (!track) return;
+
+            // Per-environment clips; one filename shared across the original/lapo/slapo folders.
+            var ENVS = [
+              { label: "cheetah-run · DCS", file: "dm_control_masked-cheetah-run-distractor-low-v0.mp4" },
+              { label: "walker-run · DCS", file: "dm_control_masked-walker-run-distractor-low-v0.mp4" },
+              { label: "hopper-hop · DCS", file: "dm_control_masked-hopper-hop-distractor-low-v0.mp4" },
+              { label: "humanoid-walk · DCS", file: "dm_control_masked-humanoid-walk-distractor-low-v0.mp4" },
+              { label: "window-open · Meta-World", file: "Meta-World_masked-MT1-window-open-v3.mp4" },
+              { label: "window-close · Meta-World", file: "Meta-World_masked-MT1-window-close-v3.mp4" },
+              { label: "door-open · Meta-World", file: "Meta-World_masked-MT1-door-open-v3.mp4" },
+              { label: "drawer-open · Meta-World", file: "Meta-World_masked-MT1-drawer-open-v3.mp4" },
+              { label: "drawer-close · Meta-World", file: "Meta-World_masked-MT1-drawer-close-v3.mp4" },
+              { label: "button-press-topdown · Meta-World", file: "Meta-World_masked-MT1-button-press-topdown-v3.mp4" },
+              { label: "pick-place · Meta-World", file: "Meta-World_masked-MT1-pick-place-v3.mp4" },
+              { label: "push · Meta-World", file: "Meta-World_masked-MT1-push-v3.mp4" },
+              { label: "reach · Meta-World", file: "Meta-World_masked-MT1-reach-v3.mp4" },
+              { label: "peg-insert-side · Meta-World", file: "Meta-World_masked-MT1-peg-insert-side-v3.mp4" }
+            ];
+            var COLS = [
+              { dir: "original", cls: "orig", name: "Original" },
+              { dir: "lapo", cls: "lapo", name: "LAPO" },
+              { dir: "slapo", cls: "ours", name: "MaskLAM" }
+            ];
+
+            ENVS.forEach(function (env) {
+              var slide = document.createElement("div");
+              slide.className = "carousel-slide";
+              slide.dataset.env = env.label;
+              var stack = document.createElement("div");
+              stack.className = "vid-stack";
+              COLS.forEach(function (c) {
+                var row = document.createElement("div");
+                row.className = "vid-row";
+                var cap = document.createElement("div");
+                cap.className = "vid-caption " + c.cls;
+                cap.textContent = c.name;
+                var slot = document.createElement("div");
+                slot.className = "video-slot";
+                var v = document.createElement("video");
+                v.muted = true; v.loop = true; v.playsInline = true;
+                v.setAttribute("preload", "none");
+                v.dataset.src = "videos/" + c.dir + "/" + env.file;
+                slot.appendChild(v);
+                row.appendChild(cap);
+                row.appendChild(slot);
+                stack.appendChild(row);
+              });
+              slide.appendChild(stack);
+              track.appendChild(slide);
+            });
+
+            var root = document.getElementById("attnCarousel");
+            var slides = Array.prototype.slice.call(track.children);
+            var envLabel = document.getElementById("attnEnv");
+            var dotsWrap = document.getElementById("attnDots");
+            var i = 0;
+
+            slides.forEach(function (s, idx) {
+              var d = document.createElement("button");
+              d.type = "button";
+              d.setAttribute("aria-label", "Go to " + s.dataset.env);
+              d.addEventListener("click", function () { go(idx); });
+              dotsWrap.appendChild(d);
+            });
+            var dots = Array.prototype.slice.call(dotsWrap.children);
+
+            function setPlaying(slide, on) {
+              Array.prototype.forEach.call(slide.querySelectorAll("video"), function (v) {
+                if (on) {
+                  if (!v.src && v.dataset.src) v.src = v.dataset.src;
+                  var p = v.play();
+                  if (p && p.catch) p.catch(function () { });
+                } else {
+                  v.pause();
+                }
+              });
+            }
+
+            var stage = root.querySelector(".carousel-stage");
+            var prevBtn = root.querySelector(".carousel-btn.prev");
+            var nextBtn = root.querySelector(".carousel-btn.next");
+
+            // Vertically center the arrows on the video (not the caption above it).
+            function positionArrows() {
+              var slot = slides[i].querySelector(".video-slot");
+              if (!slot) return;
+              var center = slot.offsetTop + slot.offsetHeight / 2;
+              prevBtn.style.top = center + "px";
+              nextBtn.style.top = center + "px";
+            }
+
+            function go(n) {
+              i = (n + slides.length) % slides.length;
+              track.style.transform = "translateX(" + (-i * 100) + "%)";
+              envLabel.textContent = slides[i].dataset.env || "";
+              dots.forEach(function (d, idx) { d.classList.toggle("is-active", idx === i); });
+              slides.forEach(function (s, idx) { setPlaying(s, idx === i); });
+              positionArrows();
+            }
+
+            prevBtn.addEventListener("click", function () { go(i - 1); });
+            nextBtn.addEventListener("click", function () { go(i + 1); });
+            window.addEventListener("resize", positionArrows);
+            go(0);
+            positionArrows();
+          })();
+        </script>
       </div>
     </section>
 
@@ -996,147 +1110,6 @@
             clusters with no clear correspondence to the ground-truth action.
           </figcaption>
         </figure>
-      </div>
-    </section>
-
-    <!-- ============ EIGEN-CAM ============ -->
-    <section class="section hero is-light">
-      <div class="container is-max-desktop">
-        <h2 class="title is-3 section-title has-text-centered">MaskLAM focuses on the agent, not the distractor</h2>
-        <!-- ===== Video carousel: original / LAPO / MaskLAM per environment ===== -->
-        <div class="vid-carousel" id="attnCarousel">
-          <div class="carousel-stage">
-            <button class="carousel-btn prev" type="button" aria-label="Previous environment">&#8249;</button>
-            <div class="carousel-viewport">
-              <div class="carousel-track" id="attnTrack"></div>
-            </div>
-            <button class="carousel-btn next" type="button" aria-label="Next environment">&#8250;</button>
-          </div>
-          <div class="carousel-meta">
-            <span class="carousel-env" id="attnEnv"></span>
-            <div class="carousel-dots" id="attnDots"></div>
-          </div>
-        </div>
-
-        <p class="fig-caption" style="margin-top:1.2rem;">
-          <b>Eigen-CAM saliency on different environments.</b> Warmer colors indicate higher influence on the predicted
-          latent action. LAPO's saliency often falls on the distractor background, while MaskLAM's covers the agent body
-          and extends to contact surfaces, including pixels outside the supervising mask, showing the IDM learns
-          endogenous
-          context from data beyond what the mask directly supervises. Use the arrows to switch environments.
-        </p>
-
-        <script>
-          (function () {
-            var track = document.getElementById('attnTrack');
-            if (!track) return;
-
-            // Per-environment clips; one filename shared across the original/lapo/slapo folders.
-            var ENVS = [
-              { label: "cheetah-run · DCS", file: "dm_control_masked-cheetah-run-distractor-low-v0.mp4" },
-              { label: "walker-run · DCS", file: "dm_control_masked-walker-run-distractor-low-v0.mp4" },
-              { label: "hopper-hop · DCS", file: "dm_control_masked-hopper-hop-distractor-low-v0.mp4" },
-              { label: "humanoid-walk · DCS", file: "dm_control_masked-humanoid-walk-distractor-low-v0.mp4" },
-              { label: "window-open · Meta-World", file: "Meta-World_masked-MT1-window-open-v3.mp4" },
-              { label: "window-close · Meta-World", file: "Meta-World_masked-MT1-window-close-v3.mp4" },
-              { label: "door-open · Meta-World", file: "Meta-World_masked-MT1-door-open-v3.mp4" },
-              { label: "drawer-open · Meta-World", file: "Meta-World_masked-MT1-drawer-open-v3.mp4" },
-              { label: "drawer-close · Meta-World", file: "Meta-World_masked-MT1-drawer-close-v3.mp4" },
-              { label: "button-press-topdown · Meta-World", file: "Meta-World_masked-MT1-button-press-topdown-v3.mp4" },
-              { label: "pick-place · Meta-World", file: "Meta-World_masked-MT1-pick-place-v3.mp4" },
-              { label: "push · Meta-World", file: "Meta-World_masked-MT1-push-v3.mp4" },
-              { label: "reach · Meta-World", file: "Meta-World_masked-MT1-reach-v3.mp4" },
-              { label: "peg-insert-side · Meta-World", file: "Meta-World_masked-MT1-peg-insert-side-v3.mp4" }
-            ];
-            var COLS = [
-              { dir: "original", cls: "orig", name: "Original" },
-              { dir: "lapo", cls: "lapo", name: "LAPO" },
-              { dir: "slapo", cls: "ours", name: "MaskLAM" }
-            ];
-
-            ENVS.forEach(function (env) {
-              var slide = document.createElement("div");
-              slide.className = "carousel-slide";
-              slide.dataset.env = env.label;
-              var stack = document.createElement("div");
-              stack.className = "vid-stack";
-              COLS.forEach(function (c) {
-                var row = document.createElement("div");
-                row.className = "vid-row";
-                var cap = document.createElement("div");
-                cap.className = "vid-caption " + c.cls;
-                cap.textContent = c.name;
-                var slot = document.createElement("div");
-                slot.className = "video-slot";
-                var v = document.createElement("video");
-                v.muted = true; v.loop = true; v.playsInline = true;
-                v.setAttribute("preload", "none");
-                v.dataset.src = "videos/" + c.dir + "/" + env.file;
-                slot.appendChild(v);
-                row.appendChild(cap);
-                row.appendChild(slot);
-                stack.appendChild(row);
-              });
-              slide.appendChild(stack);
-              track.appendChild(slide);
-            });
-
-            var root = document.getElementById("attnCarousel");
-            var slides = Array.prototype.slice.call(track.children);
-            var envLabel = document.getElementById("attnEnv");
-            var dotsWrap = document.getElementById("attnDots");
-            var i = 0;
-
-            slides.forEach(function (s, idx) {
-              var d = document.createElement("button");
-              d.type = "button";
-              d.setAttribute("aria-label", "Go to " + s.dataset.env);
-              d.addEventListener("click", function () { go(idx); });
-              dotsWrap.appendChild(d);
-            });
-            var dots = Array.prototype.slice.call(dotsWrap.children);
-
-            function setPlaying(slide, on) {
-              Array.prototype.forEach.call(slide.querySelectorAll("video"), function (v) {
-                if (on) {
-                  if (!v.src && v.dataset.src) v.src = v.dataset.src;
-                  var p = v.play();
-                  if (p && p.catch) p.catch(function () { });
-                } else {
-                  v.pause();
-                }
-              });
-            }
-
-            var stage = root.querySelector(".carousel-stage");
-            var prevBtn = root.querySelector(".carousel-btn.prev");
-            var nextBtn = root.querySelector(".carousel-btn.next");
-
-            // Vertically center the arrows on the video (not the caption above it).
-            function positionArrows() {
-              var slot = slides[i].querySelector(".video-slot");
-              if (!slot) return;
-              var center = slot.offsetTop + slot.offsetHeight / 2;
-              prevBtn.style.top = center + "px";
-              nextBtn.style.top = center + "px";
-            }
-
-            function go(n) {
-              i = (n + slides.length) % slides.length;
-              track.style.transform = "translateX(" + (-i * 100) + "%)";
-              envLabel.textContent = slides[i].dataset.env || "";
-              dots.forEach(function (d, idx) { d.classList.toggle("is-active", idx === i); });
-              slides.forEach(function (s, idx) { setPlaying(s, idx === i); });
-              positionArrows();
-            }
-
-            prevBtn.addEventListener("click", function () { go(i - 1); });
-            nextBtn.addEventListener("click", function () { go(i + 1); });
-            window.addEventListener("resize", positionArrows);
-            go(0);
-            positionArrows();
-          })();
-        </script>
       </div>
     </section>
 
