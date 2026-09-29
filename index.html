@@ -883,6 +883,33 @@
       }
     }
 
+    /* Work-in-progress badge */
+    .wip-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 6;
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .3rem .8rem;
+      border: 1px solid #f59e0b;
+      border-radius: 999px;
+      background: #fffbeb;
+      color: #92400e;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .01em;
+    }
+
+    @media (max-width: 640px) {
+      .wip-badge {
+        top: .6rem;
+        right: .6rem;
+        font-size: .72rem;
+      }
+    }
+
     /* Flex heroes otherwise grow to fit wide tables and equations on phones */
     .section.hero>.container {
       min-width: 0;
@@ -937,6 +964,7 @@
 
     <!-- ============ HERO ============ -->
     <section class="hero paper-hero">
+      <span class="wip-badge"><i class="fas fa-hammer" aria-hidden="true"></i> Work in Progress</span>
       <div class="hero-body">
         <div class="container is-max-desktop">
           <div class="columns is-centered">
