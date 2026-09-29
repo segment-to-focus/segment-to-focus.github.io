@@ -8,7 +8,7 @@
   <!-- Primary Meta Tags -->
   <meta name="title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
   <meta name="description"
-    content="MaskLAM restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making latent action models robust to visual distractors, with no labels or auxiliary losses.">
+    content="Latent action models trained on video with moving backgrounds learn to encode the background. MaskLAM computes the reconstruction loss only on agent pixels, using zero-shot SAM masks, and recovers action-aligned latents on DCS, Distracting Meta-World, and DROID.">
   <meta name="keywords"
     content="latent action models, LAPO, MaskLAM, reinforcement learning, imitation learning, video pretraining, segmentation, SAM, visual distractors, world models, robotics">
   <meta name="author"
@@ -21,7 +21,7 @@
   <meta property="og:site_name" content="Segment to Focus">
   <meta property="og:title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
   <meta property="og:description"
-    content="A lightweight fix that restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making LAMs robust to visual distractors.">
+    content="MaskLAM computes the latent action model's reconstruction loss only on agent pixels, using zero-shot SAM masks, so background motion no longer leaks into the latent action.">
   <meta property="og:url" content="https://segment-to-focus.github.io/">
   <meta property="og:image" content="https://segment-to-focus.github.io/static/images/paper/teaser.png">
   <meta property="og:image:alt" content="Overview of MaskLAM">
@@ -30,7 +30,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Segment to Focus: Guiding Latent Action Models in the Presence of Distractors">
   <meta name="twitter:description"
-    content="MaskLAM restricts latent-action reconstruction to agent pixels via zero-shot segmentation masks, for robust latent actions under visual distractors.">
+    content="MaskLAM computes the latent action model's reconstruction loss only on agent pixels, using zero-shot SAM masks, so background motion no longer leaks into the latent action.">
   <meta name="twitter:image" content="https://segment-to-focus.github.io/static/images/paper/teaser.png">
 
   <!-- Academic/Research Specific -->
@@ -112,7 +112,7 @@
     "@context": "https://schema.org",
     "@type": "ScholarlyArticle",
     "headline": "Segment to Focus: Guiding Latent Action Models in the Presence of Distractors",
-    "description": "MaskLAM restricts latent-action reconstruction to agent pixels using zero-shot segmentation masks, making latent action models robust to visual distractors.",
+    "description": "MaskLAM computes the latent action model's reconstruction loss only on agent pixels, using zero-shot SAM masks, so background motion no longer leaks into the latent action.",
     "author": [
       {"@type": "Person", "name": "Marcus Fechner", "affiliation": {"@type": "Organization", "name": "Karlsruhe Institute of Technology"}},
       {"@type": "Person", "name": "Hamza Adnan", "affiliation": {"@type": "Organization", "name": "University of Oxford"}},
@@ -435,12 +435,12 @@
 
     /* Video carousel */
     .vid-carousel {
-      max-width: 940px;
+      max-width: none;
       margin: 1.6rem auto 0;
     }
 
     .vid-carousel+.fig-caption {
-      max-width: 940px;
+      max-width: none;
       margin-left: auto;
       margin-right: auto;
     }
@@ -606,6 +606,324 @@
       align-items: center;
       justify-content: space-between;
     }
+
+    /* Lead paragraph under section titles */
+    .section-lead {
+      max-width: 760px;
+      margin: -.4rem auto 1.8rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .subhead {
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin: 2.2rem 0 .7rem;
+      color: var(--ink);
+    }
+
+    /* Key numbers */
+    .highlight-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    .highlight-strip .stat .lbl {
+      line-height: 1.4;
+    }
+
+    /* Two-state toggle (DCS / DMW) */
+    .seg-toggle {
+      display: flex;
+      justify-content: center;
+      gap: .4rem;
+      margin: 1.4rem 0 1rem;
+    }
+
+    .seg-toggle button {
+      border: 1px solid var(--accent);
+      background: #fff;
+      color: var(--accent-dark);
+      font: inherit;
+      font-weight: 600;
+      font-size: .88rem;
+      padding: .35rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+
+    .seg-toggle button.is-active {
+      background: var(--accent-dark);
+      color: #fff;
+    }
+
+    /* World-model predictions */
+    .wm-figure {
+      max-width: none;
+      margin: 0 auto;
+    }
+
+    .wm-row {
+      display: grid;
+      grid-template-columns: 7.5rem 1fr;
+      gap: .8rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .wm-row .wm-label {
+      font-weight: 700;
+      text-align: right;
+      font-size: .95rem;
+      line-height: 1.3;
+    }
+
+    .wm-row .wm-label small {
+      display: block;
+      font-weight: 400;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .wm-row img {
+      display: block;
+      width: 100%;
+      border-radius: 6px;
+    }
+
+    .wm-row.lapo .wm-label {
+      color: #b45309;
+    }
+
+    .wm-row.ours .wm-label {
+      color: var(--accent-dark);
+    }
+
+    .wm-panel[hidden] {
+      display: none;
+    }
+
+    /* Atari: input / saliency video pairs */
+    .atari-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.6rem;
+      max-width: none;
+      margin: 1.2rem auto 0;
+    }
+
+    .atari-title {
+      text-align: center;
+      font-weight: 700;
+      color: var(--accent-dark);
+      margin-bottom: .5rem;
+    }
+
+    .atari-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+    }
+
+    .atari-pair video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      background: #0f172a;
+      image-rendering: pixelated;
+    }
+
+    .pair-caption {
+      max-width: none;
+      margin: 1rem auto 0;
+    }
+
+    /* Data dropdown in the hero */
+    .hero.paper-hero {
+      overflow: visible;
+      z-index: 5;
+    }
+
+    .data-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .data-dropdown .data-toggle {
+      margin: 8px 4px;
+    }
+
+    .data-caret {
+      margin-left: .1rem !important;
+      font-size: .7rem;
+      transition: transform .15s ease;
+    }
+
+    .data-dropdown.is-open .data-caret {
+      transform: rotate(180deg);
+    }
+
+    .data-menu {
+      position: absolute;
+      top: calc(100% - 2px);
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 260px;
+      padding: .4rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, .14);
+      text-align: left;
+      z-index: 20;
+    }
+
+    .data-menu:not([hidden]) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .data-menu a {
+      display: block;
+      margin: 0;
+      padding: .5rem .75rem;
+      border-radius: 8px;
+      color: var(--ink);
+      font-weight: 600;
+      font-size: .92rem;
+      line-height: 1.3;
+    }
+
+    .data-menu a small {
+      display: block;
+      font-weight: 400;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    @media screen and (max-width: 768px) {
+      .data-dropdown {
+        display: block;
+      }
+
+      .data-menu {
+        left: 4px;
+        right: 4px;
+        transform: none;
+        min-width: 0;
+      }
+    }
+
+    .data-menu a:hover,
+    .data-menu a:focus-visible {
+      background: #f0fdfa;
+      color: var(--accent-dark);
+      outline: none;
+    }
+
+    .contrib-grid.two-by-two {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      .contrib-grid.two-by-two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Teaser: drop hero-body side padding so the figure matches the text column */
+    .hero.teaser .hero-body {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    /* UMAP row */
+    .umap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: .8rem;
+    }
+
+    .umap-grid figure {
+      margin: 0;
+      text-align: center;
+    }
+
+    .umap-grid img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .umap-grid figcaption {
+      font-size: .85rem;
+      margin-top: .4rem;
+    }
+
+    .umap-grid .ours img {
+      outline: 3px solid var(--accent);
+    }
+
+    .umap-grid .ours figcaption {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    @media (max-width: 480px) {
+      .umap-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Flex heroes otherwise grow to fit wide tables and equations on phones */
+    .section.hero>.container {
+      min-width: 0;
+    }
+
+    @media screen and (max-width: 1023px) {
+      .section.hero>.container {
+        max-width: 100%;
+      }
+    }
+
+    /* Math block */
+    .math-block {
+      overflow-x: auto;
+      overflow-y: hidden;
+      margin: 1.2rem 0;
+    }
+
+    /* Limitations */
+    .limits li {
+      margin-bottom: .6rem;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 640px) {
+      .wm-row {
+        grid-template-columns: 1fr;
+      }
+
+      .wm-row .wm-label {
+        text-align: left;
+      }
+
+      .atari-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .vid-stack {
+        gap: .4rem;
+      }
+    }
   </style>
 </head>
 
@@ -659,34 +977,31 @@
                       <span>Code</span>
                     </a>
                   </span>
-                  <span class="link-block">
-                    <a href="https://huggingface.co/datasets/EpicPinkPenguin/visual_distracting_control_suite"
-                      class="external-link button is-normal is-rounded is-dark"
-                      title="Dataset: Distracting Control Suite">
+                  <span class="link-block data-dropdown" id="dataDropdown">
+                    <button type="button" class="button is-normal is-rounded is-dark data-toggle" aria-haspopup="true"
+                      aria-expanded="false" aria-controls="dataMenu">
                       <span class="icon" aria-hidden="true">🤗</span>
-                      <span>Data: DCS</span>
-                    </a>
-                  </span>
-                  <span class="link-block">
-                    <a href="https://huggingface.co/datasets/EpicPinkPenguin/visual_distracting_metaworld"
-                      class="external-link button is-normal is-rounded is-dark" title="Dataset: Distracting Meta-World">
-                      <span class="icon" aria-hidden="true">🤗</span>
-                      <span>Data: DMW</span>
-                    </a>
-                  </span>
-                  <span class="link-block">
-                    <a href="https://huggingface.co/datasets/EpicPinkPenguin/atari_frogger_with_masks"
-                      class="external-link button is-normal is-rounded is-dark" title="Dataset: Frogger">
-                      <span class="icon" aria-hidden="true">🤗</span>
-                      <span>Data: Frogger</span>
-                    </a>
-                  </span>
-                  <span class="link-block">
-                    <a href="https://huggingface.co/datasets/EpicPinkPenguin/atari_frogger_with_masks"
-                      class="external-link button is-normal is-rounded is-dark" title="Dataset: Frostbite">
-                      <span class="icon" aria-hidden="true">🤗</span>
-                      <span>Data: Frostbite</span>
-                    </a>
+                      <span>Data</span>
+                      <span class="icon is-small data-caret"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <span class="data-menu" id="dataMenu" role="menu" hidden>
+                      <a role="menuitem"
+                        href="https://huggingface.co/datasets/EpicPinkPenguin/visual_distracting_control_suite"
+                        target="_blank" rel="noopener">Distracting Control Suite<small>trajectories, GT and SAM
+                          masks</small></a>
+                      <a role="menuitem"
+                        href="https://huggingface.co/datasets/EpicPinkPenguin/visual_distracting_metaworld"
+                        target="_blank" rel="noopener">Distracting Meta-World<small>trajectories, GT and SAM
+                          masks</small></a>
+                      <a role="menuitem"
+                        href="https://huggingface.co/datasets/EpicPinkPenguin/droid_dataset_segmentation_mask"
+                        target="_blank" rel="noopener">DROID<small>SAM&nbsp;3.1 robot masks</small></a>
+                      <a role="menuitem" href="https://huggingface.co/datasets/EpicPinkPenguin/atari_frogger_with_masks"
+                        target="_blank" rel="noopener">Atari: Frogger<small>trajectories, OCAtari masks</small></a>
+                      <a role="menuitem"
+                        href="https://huggingface.co/datasets/EpicPinkPenguin/atari_frostbite_with_masks"
+                        target="_blank" rel="noopener">Atari: Frostbite<small>trajectories, OCAtari masks</small></a>
+                    </span>
                   </span>
                 </div>
               </div>
@@ -698,88 +1013,335 @@
 
     <!-- ============ TEASER ============ -->
     <section class="hero teaser">
-      <div class="container is-max-widescreen">
+      <div class="container is-max-desktop">
         <div class="hero-body">
           <figure class="paper-figure">
             <img src="static/images/paper/teaser.png" alt="Overview of MaskLAM">
             <figcaption class="fig-caption">
-              <b>Overview of <span class="method-name">MaskLAM</span>.</b> Latent action models like LAPO infer a latent
-              action \(z_t\) from observation-only video by jointly training an inverse (IDM) and forward dynamics model
-              (FDM). Under visual distractors, LAPO's reconstruction loss pressures \(z_t\) to encode exogenous variance
-              and downstream policies fail. Since endogenous and exogenous factors are typically spatially disjoint in
-              pixel space, (1) <span class="method-name">MaskLAM</span> restricts the loss to agent pixels via a binary
-              mask \(M_{t+1}\) obtained zero-shot from SAM, so distractor pixels contribute no gradient to \(z_t\). (2)
-              On cheetah-run under distractors, the latent action space collapses into entangled clusters for LAPO but
-              forms a smooth manifold for MaskLAM (top); Eigen-CAM saliency shifts from the background distractors to
-              the agent (bottom).
+              <b>Overview of MaskLAM.</b> (1) LAPO trains an inverse dynamics model (IDM) and a forward
+              dynamics model (FDM) to reconstruct the next observation \(o_{t+1}\) through a latent action \(z_t\).
+              MaskLAM computes the same reconstruction error only on agent pixels, using a mask \(M_{t+1}\) that SAM
+              produces zero-shot, so exogenous pixels (here, the distractor video behind the cheetah) send no gradient
+              into \(z_t\). (2) On cheetah-run with distractors, LAPO's latent actions break into disconnected fragments
+              that carry little information about the action (UMAP, colored by one ground-truth action dimension), and
+              its IDM attends to the distractor. MaskLAM's latents form one manifold ordered by the action, and its IDM
+              attends to the agent.
             </figcaption>
           </figure>
         </div>
       </div>
     </section>
 
-    <!-- ============ TL;DR (abstract summary + contributions) ============ -->
+    <!-- ============ TL;DR ============ -->
     <section class="section hero is-light">
       <div class="container is-max-desktop">
         <h2 class="title is-3 section-title has-text-centered" style="margin-bottom:1.5rem;">TL;DR</h2>
         <div class="content has-text-justified" style="font-size:1.08rem;">
           <p>
-            Latent action models learn actions from action-free video, but visual distractors (moving backgrounds,
-            camera shake, other moving objects) make them encode <b>exogenous motion</b> instead of agent-controlled
-            dynamics, so fine-tuned policies fail. Since agent and distractor pixels are typically <b>spatially
-              separated</b>, <span class="method-name">MaskLAM</span> restricts the reconstruction loss to agent
-            pixels
-            using zero-shot SAM masks, so only agent-controlled dynamics shape the latent action: <b>no labels, no
-              auxiliary losses, no architecture changes</b>. Under distractors this yields up to <b>3.51×</b> lower
-            probe
-            MSE and <b>4.97×</b> higher return than LAPO, narrowing the gap to methods that rely on ground-truth
-            action
-            supervision.
+            Under action-correlated visual distractors, the next-frame reconstruction objective of latent action
+            models (LAMs) forces the latent action to encode exogenous dynamics. Since endogenous and exogenous factors
+            are largely spatially separable in pixel space, <span class="method-name">MaskLAM</span> restricts the
+            forward-dynamics loss to agent pixels using zero-shot segmentation masks (SAM), while the inverse and
+            forward
+            dynamics models retain the full observation as input. Without action labels or architectural changes, this
+            yields more action-aligned latents on the Distracting Control Suite, Distracting Meta-World, and real robot
+            video
+            (DROID).
           </p>
         </div>
-        <div class="contrib-grid" style="margin-top:1.5rem;">
-          <div class="contrib-card">
-            <div class="icon-badge"><i class="fas fa-crop-alt"></i></div>
-            <h3>Spatial separability</h3>
-            <p>The abstract Ex-BMDP factorization is, in pixel space, mostly <b>spatial</b>: agent actions change agent
-              pixels; distractors change everything else. This turns a modeling problem into a masking problem.</p>
+
+        <div class="highlight-strip">
+          <div class="stat">
+            <div class="num">3.51×</div>
+            <div class="lbl">lower action-probe error than LAPO on Distracting Meta-World</div>
           </div>
-          <div class="contrib-card">
-            <div class="icon-badge"><i class="fas fa-mask"></i></div>
-            <h3>Mask the loss, not the model</h3>
-            <p>MaskLAM restricts the forward-dynamics reconstruction loss to agent pixels. Distractor pixels contribute
-              <b>no gradient</b> to the latent action: no auxiliary losses, no labels, no architectural changes to LAPO.
-            </p>
+          <div class="stat">
+            <div class="num">4.97×</div>
+            <div class="lbl">higher normalized return than LAPO on the Distracting Control Suite</div>
           </div>
-          <div class="contrib-card">
-            <div class="icon-badge"><i class="fas fa-chart-line"></i></div>
-            <h3>Robust &amp; label-efficient</h3>
-            <p>Up to <b>3.51×</b> lower probe MSE and <b>4.97×</b> higher return than LAPO under distractors, with
-              compact
-              latents, smaller label budgets, and graceful degradation under imperfect masks.</p>
+          <div class="stat">
+            <div class="num">2k</div>
+            <div class="lbl">action labels suffice for near-peak success on Distracting Meta-World</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ============ PROBLEM + SALIENCY ============ -->
-    <section class="section hero is-light">
+    <!-- ============ PROBLEM ============ -->
+    <section class="section">
       <div class="container is-max-desktop">
-        <h2 class="title is-3 section-title has-text-centered">The problem: distractors hijack the latent action</h2>
+        <h2 class="title is-3 section-title has-text-centered">Background and Problem Formulation</h2>
         <div class="content has-text-justified">
           <p>
-            Standard LAMs rely on <i>global</i> reconstruction objectives that force the model to encode the entire
-            scene
-            to predict future frames. With moving backgrounds, camera shake, or other moving agents, pixel
-            reconstruction has no reason to prefer agent dynamics over other variation; the latent encodes whatever
-            signal has the highest variance. As a result, the latent action space of LAPO no longer recovers the true
-            action, and downstream policies fail.
+            LAPO infers a latent action \(z_t\) with an inverse dynamics model (IDM) and trains it by reconstructing the
+            next observation with a forward dynamics model (FDM). Whatever in \(o_{t+1}\) cannot be predicted from
+            \(o_t\) has to pass through \(z_t\). In the Exogenous Block MDP view
+            (<a href="https://openreview.net/forum?id=RQLLzMCefQu" target="_blank" rel="noopener">Efroni et al.,
+              2022</a>), each observation \(o_t \sim Q(\cdot \mid s_t, e_t)\) is generated from an endogenous state
+            \(s_t\), driven by the agent's actions, and an exogenous state \(e_t\), which evolves independently of them.
+            Without distractors, \(e_t\) barely changes, and the unpredictable part of the transition is the endogenous
+            one, \(s_t \to s_{t+1}\). With visual distractors such as dynamic backgrounds, camera motion, or other moving
+            objects, it also contains the exogenous transition \(e_t \to e_{t+1}\), and the latent encodes whichever
+            varies most (<a href="https://arxiv.org/abs/2506.15691" target="_blank" rel="noopener">Zhang et al.,
+              2025</a>). The FDM predictions below make this visible: LAPO reconstructs the distractors at pixel level,
+            which requires \(z_t\) to encode \(e_{t+1}\). MaskLAM's FDM receives no gradient from exogenous pixels and
+            leaves them blurry, so \(z_t\) has no reason to encode them.
           </p>
+        </div>
+      </div>
+
+      <div class="container is-max-desktop">
+        <div class="seg-toggle" role="tablist" aria-label="Benchmark">
+          <button type="button" class="is-active" data-wm="dcs" role="tab" aria-selected="true">Distracting Control
+            Suite</button>
+          <button type="button" data-wm="dmw" role="tab" aria-selected="false">Distracting Meta-World</button>
+        </div>
+        <div class="wm-figure">
+          <div class="wm-panel" data-wm-panel="dcs">
+            <div class="wm-row lapo">
+              <div class="wm-label">LAPO<small>top: prediction<br>bottom: target</small></div>
+              <img src="static/images/paper/wm_lapo_dcs.png" alt="LAPO forward-model predictions on DCS">
+            </div>
+            <div class="wm-row ours">
+              <div class="wm-label">MaskLAM<small>top: prediction<br>bottom: target</small></div>
+              <img src="static/images/paper/wm_masklam_dcs.png" alt="MaskLAM forward-model predictions on DCS">
+            </div>
+          </div>
+          <div class="wm-panel" data-wm-panel="dmw" hidden>
+            <div class="wm-row lapo">
+              <div class="wm-label">LAPO<small>top: prediction<br>bottom: target</small></div>
+              <img src="static/images/paper/wm_lapo_dmw.png" alt="LAPO forward-model predictions on DMW">
+            </div>
+            <div class="wm-row ours">
+              <div class="wm-label">MaskLAM<small>top: prediction<br>bottom: target</small></div>
+              <img src="static/images/paper/wm_masklam_dmw.png" alt="MaskLAM forward-model predictions on DMW">
+            </div>
+          </div>
+          <p class="fig-caption">
+            <b>Forward-model predictions \(\hat{o}_{t+1}\) (top row of each pair) against the true next frame
+              \(o_{t+1}\) (bottom row)</b> for ten training transitions. LAPO's predictions match the target down to the
+            last pixel. MaskLAM's FDM receives no gradient outside \(M_{t+1}\)
+            and stops modeling those pixels.
+          </p>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          var btns = document.querySelectorAll(".seg-toggle [data-wm]");
+          var panels = document.querySelectorAll("[data-wm-panel]");
+          Array.prototype.forEach.call(btns, function (b) {
+            b.addEventListener("click", function () {
+              Array.prototype.forEach.call(btns, function (o) {
+                var on = o === b;
+                o.classList.toggle("is-active", on);
+                o.setAttribute("aria-selected", on ? "true" : "false");
+              });
+              Array.prototype.forEach.call(panels, function (p) {
+                p.hidden = p.dataset.wmPanel !== b.dataset.wm;
+              });
+            });
+          });
+        })();
+      </script>
+    </section>
+
+    <!-- ============ METHOD ============ -->
+    <section class="section hero is-light">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title has-text-centered">Method: Masked Forward Dynamics Loss</h2>
+        <div class="container is-max-desktop">
+          <div class="content has-text-justified">
+            <p>
+              The endogenous transition \(s_t \to s_{t+1}\) is visible mainly on the agent's pixels, while the
+              exogenous transition \(e_t \to e_{t+1}\) mostly changes other pixels. Prior work separates the two inside
+              the model, with action supervision, object slots, or auxiliary flow losses. MaskLAM separates them in the
+              prediction target instead. Given an agent mask \(M_{t+1}\) from SAM,
+              the forward-dynamics loss becomes
+            </p>
+            <div class="math-block">
+              $$\mathcal{L}_{\text{FDM}}^{\text{MaskLAM}} = \frac{1}{\lVert M_{t+1}\rVert_1}\,\bigl\lVert M_{t+1} \odot
+              (\hat{o}_{t+1} - o_{t+1}) \bigr\rVert_2^2 .$$
+            </div>
+            <p>
+              Where \(M_{t+1} = 0\), the residual is zeroed before it propagates into \(z_t\), so encoding the exogenous
+              transition \(e_t \to e_{t+1}\) can no longer lower the loss. The architecture and the rest of the LAPO
+              pipeline stay unchanged.
+            </p>
+          </div>
+
+          <h3 class="subhead">Loss Masking versus Input Masking</h3>
+          <div class="content has-text-justified">
+            <p>
+              Masking the input instead, i.e., feeding \(M_t \odot o_t\) to both models as object-centric LAMs do, also
+              excludes exogenous pixels, but it hides the endogenous context outside the mask as well. We write the
+              endogenous state as \(s_t = (s_t^{\text{agent}}, s_t^{\text{ctx}})\), where \(s_t^{\text{ctx}}\) is the
+              context relevant to the agent's action, such as the surface it stands on or the object it manipulates.
+              With input masking, the IDM observes only the agent transition
+              \(X_t = (s_t^{\text{agent}}, s_{t+1}^{\text{agent}})\); with loss masking, it additionally observes the
+              context transition \(C_t = (s_t^{\text{ctx}}, s_{t+1}^{\text{ctx}})\). For the Bayes-optimal inverse
+              dynamics predictor, context can only help:
+            </p>
+            <div class="math-block">
+              $$H(a_t \mid X_t) - H(a_t \mid X_t, C_t) = I(a_t; C_t \mid X_t) \geq 0 .$$
+            </div>
+            <p>
+              In Frogger, the frog's
+              displacement is the sum of its action and the drift of the log it sits on, which belongs to
+              \(s_t^{\text{ctx}}\). An IDM that cannot observe \(C_t\) has to absorb the drift into \(z_t\). Loss
+              masking keeps \(C_t\) observable and still removes every pixel outside \(M_{t+1}\) from the target.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ MAIN RESULTS TABLE ============ -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title has-text-centered">Latent Action Quality and Downstream Performance</h2>
+        <div class="container is-max-desktop content has-text-justified">
           <p>
-            We study this on the <b>Distracting Control Suite (DCS)</b>, which adds dynamic background videos, agent
-            color randomization, and camera shake, and on <b>Distracting Meta-World (DMW)</b>, which adds dynamic
-            background video distractors. Eigen-CAM on those benchmarks visualizes the failure cases: LAPO attends to
-            the distractor, while <span class="method-name">MaskLAM</span> maintains focus on the agent.
+            Latent action quality is measured by the normalized error (NMSE) of a linear probe that maps frozen latent
+            actions \(z_t\) to ground-truth actions \(a_t\); downstream quality by the normalized return (NR) or success
+            rate (NSR) of the final policy.
+          </p>
+        </div>
+        <div class="results-table-wrap">
+          <table class="results">
+            <thead>
+              <tr>
+                <th class="method" rowspan="2">Method</th>
+                <th class="group" colspan="2">Distracting Control Suite</th>
+                <th class="group" colspan="2">Distracting Meta-World</th>
+                <th class="group" colspan="1">DROID (real)</th>
+              </tr>
+              <tr>
+                <th>NMSE&nbsp;↓</th>
+                <th>NR&nbsp;↑</th>
+                <th>NMSE&nbsp;↓</th>
+                <th>NSR&nbsp;↑</th>
+                <th>NMSE&nbsp;↓</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="method">LAPO</td>
+                <td>0.511<span class="err">±.034</span></td>
+                <td>0.076<span class="err">±.009</span></td>
+                <td>0.309<span class="err">±.009</span></td>
+                <td>0.636<span class="err">±.015</span></td>
+                <td>0.848<span class="err">±.007</span></td>
+              </tr>
+              <tr class="privileged">
+                <td class="method">LAOM-Labels <span class="err" style="font-style:normal;">(uses GT actions)</span>
+                </td>
+                <td>0.216<span class="err">±.003</span></td>
+                <td class="best">0.566<span class="err">±.019</span></td>
+                <td>0.142<span class="err">±.008</span></td>
+                <td>0.781<span class="err">±.033</span></td>
+                <td>0.882<span class="err">±.003</span></td>
+              </tr>
+              <tr>
+                <td class="method">LAOF</td>
+                <td>0.506<span class="err">±.019</span></td>
+                <td>0.094<span class="err">±.020</span></td>
+                <td>0.453<span class="err">±.057</span></td>
+                <td>0.577<span class="err">±.079</span></td>
+                <td>0.848<span class="err">±.005</span></td>
+              </tr>
+              <tr>
+                <td class="method">LAPO-Slots</td>
+                <td>0.657<span class="err">±.029</span></td>
+                <td>0.045<span class="err">±.008</span></td>
+                <td>0.245<span class="err">±.048</span></td>
+                <td>0.827<span class="err">±.023</span></td>
+                <td>0.854<span class="err">±.008</span></td>
+              </tr>
+              <tr class="rowsep">
+                <td colspan="6"></td>
+              </tr>
+              <tr class="ours">
+                <td class="method">MaskLAM@GT</td>
+                <td class="best">0.206<span class="err">±.009</span></td>
+                <td>0.378<span class="err">±.030</span></td>
+                <td class="best">0.088<span class="err">±.004</span></td>
+                <td class="best">0.843<span class="err">±.021</span></td>
+                <td><span class="err">n/a</span></td>
+              </tr>
+              <tr class="ours">
+                <td class="method">MaskLAM@SAM</td>
+                <td>0.233<span class="err">±.037</span></td>
+                <td>0.358<span class="err">±.040</span></td>
+                <td>0.090<span class="err">±.005</span></td>
+                <td>0.832<span class="err">±.031</span></td>
+                <td class="best">0.798<span class="err">±.006</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fig-caption" style="margin-top:1rem;">
+          <b>Latent action quality and downstream performance, aggregated over tasks.</b> Bold marks the best value per
+          column; <span style="color:var(--accent-dark);">teal rows</span> are ours. LAOM-Labels trains with 128k
+          ground-truth action labels during pre-training (65.5k on DROID) and serves as a privileged reference. DROID
+          has
+          no simulator masks and is evaluated offline, so only probe error is reported. A supervised IDM reaches an NMSE
+          of 0.684 on DROID.
+        </p>
+
+        <div class="container is-max-desktop content has-text-justified" style="margin-top:2rem;">
+          <p>
+            MaskLAM has the lowest probe error on both simulated benchmarks, below LAOM-Labels, which trains with
+            ground-truth actions. Zero-shot SAM masks perform within noise of simulator masks. The gains carry over to
+            control: normalized return on DCS rises from 0.08 to 0.38, and MaskLAM has the highest success rate on DMW.
+            On
+            real robot video (DROID), it is the only method that improves over LAPO.
+          </p>
+        </div>
+
+        <h3 class="subhead">Structure of the Latent Action Space</h3>
+        <div class="umap-grid">
+          <figure>
+            <img class="bordered" src="static/images/paper/umap_lapo.png" alt="UMAP of LAPO latent actions">
+            <figcaption>LAPO</figcaption>
+          </figure>
+          <figure>
+            <img class="bordered" src="static/images/paper/umap_laom_labels.png" alt="UMAP of LAOM-Labels latent actions">
+            <figcaption>LAOM-Labels</figcaption>
+          </figure>
+          <figure>
+            <img class="bordered" src="static/images/paper/umap_laof.png" alt="UMAP of LAOF latent actions">
+            <figcaption>LAOF</figcaption>
+          </figure>
+          <figure>
+            <img class="bordered" src="static/images/paper/umap_lapo_slots.png" alt="UMAP of LAPO-Slots latent actions">
+            <figcaption>LAPO-Slots</figcaption>
+          </figure>
+          <figure class="ours">
+            <img class="bordered" src="static/images/paper/umap_masklam.png" alt="UMAP of MaskLAM latent actions">
+            <figcaption>MaskLAM</figcaption>
+          </figure>
+        </div>
+        <p class="fig-caption">
+          <b>UMAP of latent actions \(z_t\) on cheetah-run with distractors</b>, colored by the fourth dimension of the
+          ground-truth action \(a_t\) (red: +1, blue: −1). A latent space aligned with the action shows a smooth color
+          gradient along the projection. LAPO and LAOF collapse into disconnected clusters with no clear correspondence to
+          \(a_t\). MaskLAM forms a single manifold along which the action varies monotonically, without the action
+          supervision that LAOM-Labels uses.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ SALIENCY ============ -->
+    <section class="section hero is-light">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title has-text-centered">Saliency of the Inverse Dynamics Model</h2>
+        <div class="content has-text-justified">
+          <p>
+            Eigen-CAM shows which pixels drive the IDM's latent action \(z_t\). LAPO's saliency follows the exogenous
+            distractor. MaskLAM's saliency covers the agent and extends beyond \(M_{t+1}\) to the ground the agent
+            pushes against. No loss term points to these pixels; the IDM learns to attend to the endogenous context
+            \(s_t^{\text{ctx}}\) because it explains the agent's transition.
           </p>
         </div>
         <!-- ===== Video carousel: original / LAPO / MaskLAM per environment ===== -->
@@ -798,11 +1360,9 @@
         </div>
 
         <p class="fig-caption" style="margin-top:1.2rem;">
-          <b>Eigen-CAM saliency on DCS and DMW.</b> Original shows the distractor scene. Warmer colors indicate higher
-          influence on the predicted latent action. LAPO's saliency often falls on the distractors, while
-          MaskLAM's covers the agent body and extends to contact surfaces, including pixels outside the supervising
-          mask, showing the IDM learns endogenous context from data beyond what the mask directly supervises. Use the
-          arrows to switch environments.
+          <b>Eigen-CAM saliency of the IDM on held-out distractor episodes.</b> Left: input frames. Middle and right:
+          saliency for LAPO and MaskLAM, warmer colors meaning more influence on \(z_t\). Use the arrows to switch
+          between the four DCS and ten DMW tasks.
         </p>
 
         <script>
@@ -816,19 +1376,19 @@
               { label: "walker-run · DCS", file: "dm_control_masked-walker-run-distractor-low-v0.mp4" },
               { label: "hopper-hop · DCS", file: "dm_control_masked-hopper-hop-distractor-low-v0.mp4" },
               { label: "humanoid-walk · DCS", file: "dm_control_masked-humanoid-walk-distractor-low-v0.mp4" },
-              { label: "window-open · Meta-World", file: "Meta-World_masked-MT1-window-open-v3.mp4" },
-              { label: "window-close · Meta-World", file: "Meta-World_masked-MT1-window-close-v3.mp4" },
-              { label: "door-open · Meta-World", file: "Meta-World_masked-MT1-door-open-v3.mp4" },
-              { label: "drawer-open · Meta-World", file: "Meta-World_masked-MT1-drawer-open-v3.mp4" },
-              { label: "drawer-close · Meta-World", file: "Meta-World_masked-MT1-drawer-close-v3.mp4" },
-              { label: "button-press-topdown · Meta-World", file: "Meta-World_masked-MT1-button-press-topdown-v3.mp4" },
-              { label: "pick-place · Meta-World", file: "Meta-World_masked-MT1-pick-place-v3.mp4" },
-              { label: "push · Meta-World", file: "Meta-World_masked-MT1-push-v3.mp4" },
-              { label: "reach · Meta-World", file: "Meta-World_masked-MT1-reach-v3.mp4" },
-              { label: "peg-insert-side · Meta-World", file: "Meta-World_masked-MT1-peg-insert-side-v3.mp4" }
+              { label: "window-open · DMW", file: "Meta-World_masked-MT1-window-open-v3.mp4" },
+              { label: "window-close · DMW", file: "Meta-World_masked-MT1-window-close-v3.mp4" },
+              { label: "door-open · DMW", file: "Meta-World_masked-MT1-door-open-v3.mp4" },
+              { label: "drawer-open · DMW", file: "Meta-World_masked-MT1-drawer-open-v3.mp4" },
+              { label: "drawer-close · DMW", file: "Meta-World_masked-MT1-drawer-close-v3.mp4" },
+              { label: "button-press-topdown · DMW", file: "Meta-World_masked-MT1-button-press-topdown-v3.mp4" },
+              { label: "pick-place · DMW", file: "Meta-World_masked-MT1-pick-place-v3.mp4" },
+              { label: "push · DMW", file: "Meta-World_masked-MT1-push-v3.mp4" },
+              { label: "reach · DMW", file: "Meta-World_masked-MT1-reach-v3.mp4" },
+              { label: "peg-insert-side · DMW", file: "Meta-World_masked-MT1-peg-insert-side-v3.mp4" }
             ];
             var COLS = [
-              { dir: "original", cls: "orig", name: "Original" },
+              { dir: "original", cls: "orig", name: "Input" },
               { dir: "lapo", cls: "lapo", name: "LAPO" },
               { dir: "slapo", cls: "ours", name: "MaskLAM" }
             ];
@@ -887,7 +1447,6 @@
               });
             }
 
-            var stage = root.querySelector(".carousel-stage");
             var prevBtn = root.querySelector(".carousel-btn.prev");
             var nextBtn = root.querySelector(".carousel-btn.next");
 
@@ -916,200 +1475,138 @@
             positionArrows();
           })();
         </script>
-      </div>
-    </section>
 
-    <!-- ============ METHOD ============ -->
-    <section class="section">
-      <div class="container is-max-widescreen">
-        <h2 class="title is-3 section-title has-text-centered">Method: a masked forward-dynamics loss</h2>
-        <div class="container is-max-desktop">
-          <div class="content has-text-justified">
-            <p>
-              Prior work fixes the contamination of \(z_t\) at the representation level: action supervision,
-              object-centric slots, or auxiliary optical-flow losses. <span class="method-name">MaskLAM</span> takes a
-              different route: instead of modifying the encoder or adding losses, we modify the <b>prediction target</b>
-              to
-              exclude exogenous dynamics from the learning signal. Given a binary agent mask \(M_{t+1}\), we
-              restrict the FDM loss to agent pixels:
-            </p>
-            <p class="has-text-centered" style="margin: 1.4rem 0;">
-              $$\mathcal{L}_{\text{FDM}}^{\text{MaskLAM}} = \frac{1}{\lVert M_{t+1}\rVert_1}\,\bigl\lVert M_{t+1} \odot
-              (\hat{o}_{t+1} - o_{t+1}) \bigr\rVert_2^2$$
-            </p>
-            <p>
-              The loss is zero on distractor pixels, so where \(M_{t+1} = 0\) the residual is zeroed
-              before it can propagate into \(z_t\). Encoding exogenous transitions can no longer reduce the
-              loss, so the optimization stops pressuring the latent to capture distractor dynamics. Crucially we mask
-              the
-              <b>loss</b>, not the input: the IDM and FDM still see the full observation (plus the mask as a hint
-              channel),
-              so they can discover endogenous context the mask misses (e.g. a gripper's contact surface), while
-              \(z_t\) is shaped only by endogenous prediction errors.
-            </p>
-          </div>
-        </div>
-        <figure class="paper-figure" style="margin-top:1rem; width:100%; max-width:1000px;">
-          <img src="static/images/paper/pipeline.png" alt="MaskLAM pipeline">
-          <figcaption class="fig-caption">
-            <b>Simplified MaskLAM stage-1 pipeline.</b> Conditioned on a target-agent prompt, a pre-trained SAM&nbsp;2.1
-            model extracts agent masks from the observations. The IDM predicts the latent action \(z_t\); the
-            FDM reconstructs \(\hat{o}_{t+1}\). The forward-dynamics loss is spatially restricted to agent pixels
-            (white) via \(M_{t+1}\), so distractor pixels (black) contribute no gradient.
-          </figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <!-- ============ MAIN RESULTS TABLE ============ -->
-    <section class="section hero is-light">
-      <div class="container is-max-widescreen">
-        <h2 class="title is-3 section-title has-text-centered">Main results</h2>
-        <div class="container is-max-desktop content has-text-justified">
+        <h3 class="subhead">Endogenous Context outside the Agent Mask</h3>
+        <div class="content has-text-justified">
           <p>
-            Across both vanilla and distractor settings, MaskLAM achieves the lowest probe error among label-free
-            methods
-            (LAPO, LAPO-Slots, LAOF), and the gap widens when distractors are added. <b>MaskLAM@GT</b> (simulator masks)
-            and <b>MaskLAM@SAM</b> (zero-shot SAM&nbsp;2.1 masks) are within noise of each other; off-the-shelf
-            segmentation is sufficient. Better alignment translates to better policies, with the largest gains under
-            distractors.
+            In Frostbite and Frogger, the agent's transition depends on \(s_t^{\text{ctx}}\): ice floes, logs, and
+            turtles carry the agent. MaskLAM's IDM attends to this context as well as to the agent.
           </p>
         </div>
-        <div class="results-table-wrap">
-          <table class="results">
-            <thead>
-              <tr>
-                <th class="method" rowspan="2">Method</th>
-                <th class="group" colspan="4">Distracting Control Suite</th>
-                <th class="group" colspan="4">Distracting Meta-World</th>
-              </tr>
-              <tr>
-                <th>NMSE&nbsp;↓<br><span class="err">Vanilla</span></th>
-                <th>NMSE&nbsp;↓<br><span class="err">Distractor</span></th>
-                <th>NR&nbsp;↑<br><span class="err">Vanilla</span></th>
-                <th>NR&nbsp;↑<br><span class="err">Distractor</span></th>
-                <th>NMSE&nbsp;↓<br><span class="err">Vanilla</span></th>
-                <th>NMSE&nbsp;↓<br><span class="err">Distractor</span></th>
-                <th>NSR&nbsp;↑<br><span class="err">Vanilla</span></th>
-                <th>NSR&nbsp;↑<br><span class="err">Distractor</span></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="method">LAPO</td>
-                <td>0.297<span class="err">±.117</span></td>
-                <td>0.511<span class="err">±.034</span></td>
-                <td>0.236<span class="err">±.028</span></td>
-                <td>0.076<span class="err">±.009</span></td>
-                <td class="best">0.074<span class="err">±.004</span></td>
-                <td>0.309<span class="err">±.009</span></td>
-                <td class="best">0.851<span class="err">±.026</span></td>
-                <td>0.636<span class="err">±.015</span></td>
-              </tr>
-              <tr class="privileged">
-                <td class="method">LAOM-Labels <span class="err" style="font-style:normal;">(uses GT actions)</span>
-                </td>
-                <td>0.211<span class="err">±.006</span></td>
-                <td>0.216<span class="err">±.003</span></td>
-                <td class="best">0.608<span class="err">±.017</span></td>
-                <td class="best">0.566<span class="err">±.019</span></td>
-                <td>0.114<span class="err">±.010</span></td>
-                <td>0.142<span class="err">±.008</span></td>
-                <td>0.727<span class="err">±.028</span></td>
-                <td>0.781<span class="err">±.033</span></td>
-              </tr>
-              <tr>
-                <td class="method">LAOF</td>
-                <td>0.639<span class="err">±.045</span></td>
-                <td>0.506<span class="err">±.019</span></td>
-                <td>0.072<span class="err">±.017</span></td>
-                <td>0.094<span class="err">±.020</span></td>
-                <td>0.185<span class="err">±.037</span></td>
-                <td>0.453<span class="err">±.057</span></td>
-                <td>0.716<span class="err">±.118</span></td>
-                <td>0.577<span class="err">±.079</span></td>
-              </tr>
-              <tr>
-                <td class="method">LAPO-Slots</td>
-                <td>0.352<span class="err">±.012</span></td>
-                <td>0.657<span class="err">±.029</span></td>
-                <td>0.126<span class="err">±.021</span></td>
-                <td>0.045<span class="err">±.008</span></td>
-                <td>0.109<span class="err">±.006</span></td>
-                <td>0.245<span class="err">±.048</span></td>
-                <td>0.833<span class="err">±.032</span></td>
-                <td>0.827<span class="err">±.023</span></td>
-              </tr>
-              <tr class="rowsep">
-                <td colspan="9"></td>
-              </tr>
-              <tr class="ours">
-                <td class="method">MaskLAM@GT</td>
-                <td class="best">0.205<span class="err">±.006</span></td>
-                <td class="best">0.206<span class="err">±.009</span></td>
-                <td>0.513<span class="err">±.029</span></td>
-                <td>0.378<span class="err">±.030</span></td>
-                <td>0.082<span class="err">±.004</span></td>
-                <td class="best">0.088<span class="err">±.004</span></td>
-                <td>0.828<span class="err">±.036</span></td>
-                <td class="best">0.843<span class="err">±.021</span></td>
-              </tr>
-              <tr class="ours">
-                <td class="method">MaskLAM@SAM</td>
-                <td>0.213<span class="err">±.010</span></td>
-                <td>0.233<span class="err">±.037</span></td>
-                <td>0.493<span class="err">±.036</span></td>
-                <td>0.358<span class="err">±.040</span></td>
-                <td>0.078<span class="err">±.003</span></td>
-                <td>0.090<span class="err">±.005</span></td>
-                <td>0.828<span class="err">±.022</span></td>
-                <td>0.832<span class="err">±.031</span></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="atari-grid" id="atariVideos">
+          <div class="atari-game">
+            <div class="atari-title">Frostbite</div>
+            <div class="atari-pair">
+              <div class="vid-row">
+                <div class="vid-caption orig">Input</div>
+                <video muted loop playsinline preload="none" poster="videos/atari/frostbite_o_t.jpg"
+                  data-src="videos/atari/frostbite_o_t.mp4" aria-label="Frostbite gameplay"></video>
+              </div>
+              <div class="vid-row">
+                <div class="vid-caption ours">MaskLAM</div>
+                <video muted loop playsinline preload="none" poster="videos/atari/frostbite_eigencam.jpg"
+                  data-src="videos/atari/frostbite_eigencam.mp4"
+                  aria-label="Frostbite MaskLAM Eigen-CAM saliency"></video>
+              </div>
+            </div>
+          </div>
+          <div class="atari-game">
+            <div class="atari-title">Frogger</div>
+            <div class="atari-pair">
+              <div class="vid-row">
+                <div class="vid-caption orig">Input</div>
+                <video muted loop playsinline preload="none" poster="videos/atari/frogger_o_t.jpg"
+                  data-src="videos/atari/frogger_o_t.mp4" aria-label="Frogger gameplay"></video>
+              </div>
+              <div class="vid-row">
+                <div class="vid-caption ours">MaskLAM</div>
+                <video muted loop playsinline preload="none" poster="videos/atari/frogger_eigencam.jpg"
+                  data-src="videos/atari/frogger_eigencam.mp4" aria-label="Frogger MaskLAM Eigen-CAM saliency"></video>
+              </div>
+            </div>
+          </div>
         </div>
-        <p class="fig-caption" style="margin-top:1rem;">
-          <b>Latent action quality (NMSE) and downstream behavior-cloning performance (NR/NSR)</b>, aggregated over
-          environment suites, mean ± std over 3 seeds. <b class="method-name">Bold</b> marks the best value per column;
-          <span style="color:var(--accent-dark);">teal rows</span> are ours. <i>LAOM-Labels uses privileged ground-truth
-            action supervision during pre-training and serves as an upper-bound reference.</i>
+        <script>
+          (function () {
+            var root = document.getElementById("atariVideos");
+            if (!root) return;
+            var pairs = Array.prototype.map.call(root.querySelectorAll(".atari-pair"), function (p) {
+              return Array.prototype.slice.call(p.querySelectorAll("video"));
+            });
+            function play(vs) {
+              vs.forEach(function (v) {
+                if (!v.src) v.src = v.dataset.src;
+                v.currentTime = vs[0].currentTime || 0;
+                var pr = v.play();
+                if (pr && pr.catch) pr.catch(function () { });
+              });
+            }
+            // Keep input and saliency in lockstep; they share length and frame rate.
+            pairs.forEach(function (vs) {
+              vs[0].addEventListener("timeupdate", function () {
+                if (Math.abs(vs[1].currentTime - vs[0].currentTime) > 0.15) vs[1].currentTime = vs[0].currentTime;
+              });
+            });
+            if (!("IntersectionObserver" in window)) { pairs.forEach(play); return; }
+            new IntersectionObserver(function (entries) {
+              entries.forEach(function (e) {
+                pairs.forEach(function (vs) {
+                  if (e.isIntersecting) play(vs); else vs.forEach(function (v) { v.pause(); });
+                });
+              });
+            }, { threshold: 0.25 }).observe(root);
+          })();
+        </script>
+        <p class="fig-caption pair-caption">
+          <b>Saliency beyond the agent mask</b> in Frostbite (100 s) and Frogger (50 s), 10 fps. The mask \(M_t\)
+          covers only the player sprite. Saliency on Frogger's cars comes from a rendering artifact: they flicker in sync
+          with the frog when they share its lane.
         </p>
       </div>
     </section>
 
-    <!-- ============ UMAP ============ -->
+    <!-- ============ ABLATION ============ -->
     <section class="section">
-      <div class="container is-max-widescreen">
-        <h2 class="title is-3 section-title has-text-centered">MaskLAM recovers action-aligned latents</h2>
-        <figure class="paper-figure">
-          <div style="display:inline-flex; flex-wrap:wrap; gap:1rem; justify-content:center; align-items:flex-end;">
-            <div><img class="bordered" src="static/images/paper/umap_lapo.png" style="width:170px;" alt="UMAP LAPO">
-              <div style="font-size:.85rem; margin-top:.4rem;">LAPO</div>
-            </div>
-            <div><img class="bordered" src="static/images/paper/umap_laom_labels.png" style="width:170px;"
-                alt="UMAP LAOM-Labels">
-              <div style="font-size:.85rem; margin-top:.4rem;">LAOM-Labels</div>
-            </div>
-            <div><img class="bordered" src="static/images/paper/umap_laof.png" style="width:170px;" alt="UMAP LAOF">
-              <div style="font-size:.85rem; margin-top:.4rem;">LAOF</div>
-            </div>
-            <div><img class="bordered" src="static/images/paper/umap_lapo_slots.png" style="width:170px;"
-                alt="UMAP LAPO-Slots">
-              <div style="font-size:.85rem; margin-top:.4rem;">LAPO-Slots</div>
-            </div>
-            <div><img class="bordered" src="static/images/paper/umap_masklam.png"
-                style="width:170px; outline:3px solid var(--accent);" alt="UMAP MaskLAM">
-              <div style="font-size:.85rem; margin-top:.4rem;" class="method-name">MaskLAM</div>
-            </div>
-          </div>
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title has-text-centered">Ablation Study</h2>
+        <figure class="paper-figure" style="width:100%;">
+          <img src="static/images/paper/ablation_atari.png"
+            alt="Ablation of MaskLAM components and loss versus input masking">
           <figcaption class="fig-caption">
-            <b>UMAP projection of the latent action space</b> on cheetah-run (DCS, distractor), colored by the 4th
-            ground-truth action dimension. A well-aligned latent space shows a smooth color gradient along the
-            projection.
-            MaskLAM produces a clean, monotonically structured manifold, while LAPO and LAOF collapse into entangled
-            clusters with no clear correspondence to the ground-truth action.
+            <b>(a)</b> Probe NMSE on DCS and DMW when components are removed one at a time; removing all of them
+            recovers LAPO. <b>(b, c)</b> Loss masking versus input masking on Frostbite and Frogger, where
+            the agent's transition depends on the context \(s_t^{\text{ctx}}\): linear-probe accuracy over discrete
+            actions (b) and normalized return (c).
           </figcaption>
         </figure>
+        <div class="container is-max-desktop content has-text-justified" style="margin-top:1.8rem;">
+          <p>
+            Removing the masked loss more than doubles probe error, so it accounts for most of the gain (a). On DCS and
+            DMW, the agents are mostly self-actuated, \(I(a_t; C_t \mid X_t) \approx 0\), and input masking performs as well
+            as loss masking. On Frostbite and Frogger, where \(C_t\) is informative about \(a_t\), it does not: loss
+            masking raises normalized return from 0.33 to 0.94, and the input-masked Frogger policy collapses to 0.04
+            (b, c).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ANALYSIS ============ -->
+    <section class="section hero is-light">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 section-title has-text-centered">Additional Analyses</h2>
+        <div class="contrib-grid two-by-two">
+          <div class="contrib-card">
+            <div class="icon-badge"><i class="fas fa-tags"></i></div>
+            <h3>Action-Label Budget</h3>
+            <p>MaskLAM's latent actions need far fewer action labels than LAPO's to train a decoder with strong downstream performance.</p>
+          </div>
+          <div class="contrib-card">
+            <div class="icon-badge"><i class="fas fa-mask"></i></div>
+            <h3>Robustness to Segmentation Errors</h3>
+            <p>Performance degrades gracefully under agent occlusion and imprecise mask boundaries, so pixel-perfect segmentation is not required.</p>
+          </div>
+          <div class="contrib-card">
+            <div class="icon-badge"><i class="fas fa-cloud-showers-heavy"></i></div>
+            <h3>Stronger Distractors</h3>
+            <p>MaskLAM remains effective under stronger distractors and when evaluated under distractors stronger than those seen in training.</p>
+          </div>
+          <div class="contrib-card">
+            <div class="icon-badge"><i class="fas fa-project-diagram"></i></div>
+            <h3>One Model, Many Embodiments</h3>
+            <p>A single MaskLAM trained across mixed embodiment data with different action spaces matches embodiment-specific LAM models, and policies for each embodiment can be fine-tuned from its latent actions.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1159,6 +1656,22 @@
   </footer>
 
   <script>
+    (function () {
+      var root = document.getElementById('dataDropdown');
+      if (!root) return;
+      var btn = root.querySelector('.data-toggle');
+      var menu = document.getElementById('dataMenu');
+      function set(open) {
+        menu.hidden = !open;
+        root.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      btn.addEventListener('click', function (e) { e.stopPropagation(); set(menu.hidden); });
+      document.addEventListener('click', function (e) { if (!root.contains(e.target)) set(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); }
+      });
+    })();
     function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
     window.addEventListener('scroll', function () {
       var b = document.querySelector('.scroll-to-top');
